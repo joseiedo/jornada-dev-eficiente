@@ -1,5 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.author;
 
+import com.github.joseiedo.desafiocasadocodigo.config.UniqueAuthorEmail;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ public record CreateAuthorRequest(
 
         @NotNull
         @Email
+        @UniqueAuthorEmail(entity = Author.class)
         String email,
 
         @NotBlank
