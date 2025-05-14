@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-@Constraint(validatedBy = UniqueAuthorEmailValidator.class)
+@Constraint(validatedBy = UniqueEmailValidator.class)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface UniqueAuthorEmail {
+public @interface UniqueEmail {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
