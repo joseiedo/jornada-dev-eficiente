@@ -24,7 +24,7 @@ public class AuthorController {
 
     @PostMapping
     @Transactional
-    public CreateAuthorResponse cadastrar(@RequestBody @Valid CreateAuthorRequest request) {
+    public CreateAuthorResponse create(@RequestBody @Valid CreateAuthorRequest request) {
         Author author = request.toModel();
         authorRepository.save(author);
         return CreateAuthorResponse.fromModel(author);

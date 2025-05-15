@@ -22,10 +22,9 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
 
     @Override
     public boolean isValid(String value, jakarta.validation.ConstraintValidatorContext context) {
-        return value != null && entityManager.createNativeQuery("SELECT * FROM " + entity.getSimpleName() + " WHERE " + column + " = :value")
+        return value != null && ((Number) entityManager.createNativeQuery("SELECT COUNT(*) FROM " + entity.getSimpleName() + " WHERE " + column + " = :value")
                 .setParameter("value", value)
-                .getResultList()
-                .isEmpty();
+                .getSingleResult()).intValue() == 0;
     }
 
 }

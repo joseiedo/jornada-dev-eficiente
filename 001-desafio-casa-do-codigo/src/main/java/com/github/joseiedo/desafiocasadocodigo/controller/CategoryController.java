@@ -24,7 +24,7 @@ public class CategoryController {
 
     @PostMapping
     @Transactional
-    public CreateCategoryResponse cadastrar(@RequestBody @Valid CreateCategoryRequest request) {
+    public CreateCategoryResponse create(@RequestBody @Valid CreateCategoryRequest request) {
         Category category = request.toModel();
         categoryRepository.save(category);
         return CreateCategoryResponse.fromModel(category);
