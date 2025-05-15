@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.author;
 
-import com.github.joseiedo.desafiocasadocodigo.config.UniqueEmail;
+import com.github.joseiedo.desafiocasadocodigo.config.Unique;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +13,7 @@ public record CreateAuthorRequest(
 
         @NotNull
         @Email
-        @UniqueEmail(entity = Author.class)
+        @Unique(entity = Author.class, column = "email", message = "Email already registered")
         String email,
 
         @NotBlank

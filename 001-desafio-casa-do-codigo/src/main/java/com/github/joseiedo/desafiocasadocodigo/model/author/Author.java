@@ -31,7 +31,6 @@ public class Author {
     @CreationTimestamp
     ZonedDateTime createdAt;
 
-    // Created just because JPA requires it, It shouldn't be used.
     @Deprecated
     public Author() {
     }

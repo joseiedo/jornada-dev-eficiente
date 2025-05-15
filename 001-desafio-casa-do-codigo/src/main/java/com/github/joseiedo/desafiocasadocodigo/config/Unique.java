@@ -9,14 +9,16 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-@Constraint(validatedBy = UniqueEmailValidator.class)
+@Constraint(validatedBy = UniqueValidator.class)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface UniqueEmail {
+public @interface Unique {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    String message() default "Email already registered";
-
     Class<?> entity();
+
+    String column();
+
+    String message() default "{com.github.joseiedo.desafiocasadocodigo.config.Unique.message}";
 }
