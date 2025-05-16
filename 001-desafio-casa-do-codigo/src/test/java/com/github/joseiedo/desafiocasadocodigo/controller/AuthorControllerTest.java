@@ -2,16 +2,15 @@ package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -39,14 +38,12 @@ class AuthorControllerTest {
                 }
                 """;
 
-        MvcResult mvcResult = this.mockMvc
+        this.mockMvc
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        String responseBody = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals("{\"errors\":{\"email\":\"must be a well-formed email address\"}}", responseBody);
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.email").value("must be a well-formed email address"));
     }
 
     @Test
@@ -59,15 +56,12 @@ class AuthorControllerTest {
                 }
                 """;
 
-        MvcResult mvcResult = this.mockMvc
+        this.mockMvc
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
                 .andExpect(status().isBadRequest())
-                .andReturn();
-
-        String responseBody = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals("{\"errors\":{\"name\":\"must not be blank\"}}", responseBody);
+                .andExpect(jsonPath("$.errors.name").value("must not be blank"));
     }
 
     @Test
@@ -80,14 +74,12 @@ class AuthorControllerTest {
                 }
                 """;
 
-        MvcResult mvcResult = this.mockMvc
+        this.mockMvc
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        String responseBody = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals("{\"errors\":{\"description\":\"must not be blank\"}}", responseBody);
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.description").value("must not be blank"));
     }
 
     @Test
@@ -104,16 +96,14 @@ class AuthorControllerTest {
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk());
 
-        MvcResult mvcResult = this.mockMvc
+        this.mockMvc
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
-                .andExpect(status().isBadRequest()).andReturn();
-
-        String responseBody = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals("{\"errors\":{\"email\":\"Email already registered\"}}", responseBody);
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.email").value("Email already registered"));
     }
 
     @Test
@@ -130,7 +120,6 @@ class AuthorControllerTest {
                 .perform(post("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk());
     }
-
 }
