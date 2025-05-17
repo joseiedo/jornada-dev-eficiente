@@ -80,6 +80,14 @@ public class Book {
                 '}';
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     public static class BookBuilder {
         private String title;
         private String overview;

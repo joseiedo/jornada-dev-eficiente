@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,7 +103,6 @@ class BookControllerTest {
                         .content(jsonPayload))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors.overview").value("length must be between 1 and 500"));
-        ;
     }
 
     @Test
@@ -267,5 +267,35 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldListAllBooks() throws Exception {
+        String jsonPayload = """
+                {
+                    "title": "Valid Title",
+                    "overview": "Valid overview",
+                    "summary": "Valid summary",
+                    "price": 30,
+                    "numberOfPages": 150,
+                    "lsbn": "123-456-789",
+                    "publishDate": "%s",
+                    "categoryId": %d,
+                    "authorId": %d
+                }
+                """.formatted(publishDate.toString(), category.getId(), author.getId());
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content").isArray())
+                .andExpect(jsonPath("content[0].id").isNumber())
+                .andExpect(jsonPath("content[0].title").value("Valid Title"));
     }
 }

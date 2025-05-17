@@ -1,15 +1,15 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.dto.book.CreateBookRequest;
+import com.github.joseiedo.desafiocasadocodigo.dto.book.GetBookResponse;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.category.CategoryRepository;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
@@ -30,5 +30,10 @@ public class BookController {
         Book book = request.toModel(authorRepository, categoryRepository);
         bookRepository.save(book);
         return book.toString();
+    }
+
+    @GetMapping
+    public Page<GetBookResponse> list(Pageable pageable) {
+        return bookRepository.findAll(pageable).map(GetBookResponse::fromModel);
     }
 }
