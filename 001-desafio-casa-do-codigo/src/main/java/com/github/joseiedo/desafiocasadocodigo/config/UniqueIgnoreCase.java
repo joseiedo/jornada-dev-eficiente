@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-@Constraint(validatedBy = UniqueValidator.class)
+@Constraint(validatedBy = UniqueIgnoreCaseValidator.class)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface Unique {
+public @interface UniqueIgnoreCase {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
