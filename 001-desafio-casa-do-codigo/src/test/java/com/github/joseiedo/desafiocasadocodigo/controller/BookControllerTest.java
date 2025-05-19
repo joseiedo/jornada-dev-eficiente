@@ -5,6 +5,7 @@ import com.github.joseiedo.desafiocasadocodigo.model.category.Category;
 import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.category.CategoryRepository;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -297,5 +298,56 @@ class BookControllerTest {
                 .andExpect(jsonPath("content").isArray())
                 .andExpect(jsonPath("content[0].id").isNumber())
                 .andExpect(jsonPath("content[0].title").value("Valid Title"));
+    }
+
+    @Test
+    void shouldThrowNotFoundWhenBookNotFound() throws Exception {
+        long nonExistentBookId = 999L;
+
+        mockMvc.perform(get("/books/" + nonExistentBookId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGetDetailedBook() throws Exception {
+        String jsonPayload = """
+                {
+                    "title": "Valid Title",
+                    "overview": "Valid overview",
+                    "summary": "Valid summary",
+                    "price": 30,
+                    "numberOfPages": 150,
+                    "lsbn": "123-456-789",
+                    "publishDate": "%s",
+                    "categoryId": %d,
+                    "authorId": %d
+                }
+                """.formatted(publishDate.toString(), category.getId(), author.getId());
+
+        Long createdBookId = ((Number) JsonPath.parse(mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse().getContentAsString()).read("id")).longValue();
+
+        mockMvc.perform(get("/books/" + createdBookId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPayload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("title").value("Valid Title"))
+                .andExpect(jsonPath("overview").value("Valid overview"))
+                .andExpect(jsonPath("summary").value("Valid summary"))
+                .andExpect(jsonPath("price").value(30))
+                .andExpect(jsonPath("numberOfPages").value(150))
+                .andExpect(jsonPath("lsbn").value("123-456-789"))
+                .andExpect(jsonPath("publishDate").value(publishDate.toString()))
+                .andExpect(jsonPath("category.id").value(category.getId()))
+                .andExpect(jsonPath("category.name").value(category.getName()))
+                .andExpect(jsonPath("author.id").value(author.getId()))
+                .andExpect(jsonPath("author.name").value(author.getName()))
+                .andExpect(jsonPath("author.email").value(author.getEmail()))
+        ;
     }
 }

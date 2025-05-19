@@ -26,4 +26,5 @@ public class ExceptionHandling {
         });
         return Map.of("errors", errors);
     }
+
 }

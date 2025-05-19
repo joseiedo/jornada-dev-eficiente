@@ -88,6 +88,38 @@ public class Book {
         return title;
     }
 
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public Integer getNumberOfPages() {
+        return numberOfPages;
+    }
+
+    public String getLsbn() {
+        return lsbn;
+    }
+
+    public LocalDate getPublishDate() {
+        return publishDate;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
     public static class BookBuilder {
         private String title;
         private String overview;
