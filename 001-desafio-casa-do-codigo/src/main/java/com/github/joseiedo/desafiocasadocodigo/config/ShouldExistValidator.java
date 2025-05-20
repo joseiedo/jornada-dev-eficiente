@@ -22,7 +22,8 @@ public class ShouldExistValidator implements ConstraintValidator<ShouldExist, Ob
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         String query = "SELECT COUNT(*) FROM " + entity.getSimpleName() + " WHERE " + column + " = :value";
-        return value != null && ((Number) entityManager.createNativeQuery(query)
+        if (value == null) return true;
+        return ((Number) entityManager.createNativeQuery(query)
                 .setParameter("value", value)
                 .getSingleResult()).intValue() > 0;
     }

@@ -1,12 +1,11 @@
 package com.github.joseiedo.desafiocasadocodigo.model.country;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.github.joseiedo.desafiocasadocodigo.model.state.State;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 public class Country {
@@ -18,6 +17,9 @@ public class Country {
     @Column(unique = true)
     @NotBlank
     private String name;
+
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<State> states = new java.util.HashSet<>();
 
     @Deprecated
     public Country() {
@@ -37,5 +39,13 @@ public class Country {
 
     public Long getId() {
         return id;
+    }
+
+    public Boolean containsState(State state) {
+        return states.contains(state);
+    }
+
+    public Boolean hasStates() {
+        return !states.isEmpty();
     }
 }

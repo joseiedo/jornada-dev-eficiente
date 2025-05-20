@@ -22,6 +22,7 @@ public class UniqueIgnoreCaseValidator implements ConstraintValidator<UniqueIgno
 
     @Override
     public boolean isValid(String value, jakarta.validation.ConstraintValidatorContext context) {
+        if (value == null) return true;
         return ((Number) entityManager.createNativeQuery("SELECT COUNT(*) FROM " + entity.getSimpleName() + " WHERE " + "lower(" + column + ") = lower(:value)")
                 .setParameter("value", value)
                 .getSingleResult()).intValue() == 0;

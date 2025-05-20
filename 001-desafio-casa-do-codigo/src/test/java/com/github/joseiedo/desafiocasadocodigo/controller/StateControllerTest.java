@@ -40,10 +40,10 @@ class StateControllerTest {
     void tearDown() {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
-            entityManager.remove(entityManager.contains(country) ? country : entityManager.merge(country));
             entityManager.createQuery("DELETE FROM State s WHERE s.country = :country")
                     .setParameter("country", country)
                     .executeUpdate();
+            entityManager.remove(entityManager.contains(country) ? country : entityManager.merge(country));
             entityManager.getTransaction().commit();
         }
     }
