@@ -1,8 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
+import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,31 +20,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StateControllerTest {
 
     Country country;
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManagerWrapper entityManagerWrapper;
 
     @BeforeEach
     void setup() {
-        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-            entityManager.getTransaction().begin();
+        entityManagerWrapper.runInTransaction(em -> {
             country = new Country("Brazil");
-            entityManager.persist(country);
-            entityManager.getTransaction().commit();
-        }
+            em.persist(country);
+        });
     }
 
     @AfterEach
     void tearDown() {
-        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
-            entityManager.getTransaction().begin();
-            entityManager.createQuery("DELETE FROM State s WHERE s.country = :country")
+        entityManagerWrapper.runInTransaction(em -> {
+            em.createQuery("DELETE FROM State s WHERE s.country = :country")
                     .setParameter("country", country)
                     .executeUpdate();
-            entityManager.remove(entityManager.contains(country) ? country : entityManager.merge(country));
-            entityManager.getTransaction().commit();
-        }
+            em.remove(em.contains(country) ? country : em.merge(country));
+        });
     }
 
 

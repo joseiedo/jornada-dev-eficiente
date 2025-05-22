@@ -1,7 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +21,11 @@ class CountryControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private EntityManagerWrapper entityManagerWrapper;
 
     @BeforeEach
     void setup() {
-        try (
-                EntityManager entityManager = entityManagerFactory.createEntityManager();
-        ) {
-            entityManager.getTransaction().begin();
-            entityManager.createQuery("DELETE FROM Country").executeUpdate();
-            entityManager.getTransaction().commit();
-        }
+        entityManagerWrapper.runInTransaction(em -> em.createQuery("DELETE FROM Country").executeUpdate());
     }
 
     @Test
