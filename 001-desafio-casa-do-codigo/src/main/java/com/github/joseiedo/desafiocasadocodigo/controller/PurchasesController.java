@@ -1,31 +1,33 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
-import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseStateValidator;
+import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseCountryAndStateValidator;
+import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseTotalAndItemsPriceValidator;
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/purchases")
 public class PurchasesController {
 
-    public PurchaseStateValidator purchaseStateValidator;
+    private final PurchaseCountryAndStateValidator purchaseStateValidator;
+    private final PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator;
 
-    public PurchasesController(PurchaseStateValidator purchaseStateValidator) {
+    public PurchasesController(PurchaseCountryAndStateValidator purchaseStateValidator, PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator) {
         this.purchaseStateValidator = purchaseStateValidator;
+        this.purchaseTotalPriceValidator = purchaseTotalPriceValidator;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(purchaseStateValidator, purchaseTotalPriceValidator);
     }
 
     @PostMapping
-    public ResponseEntity<String> registerPurchase(@Valid @RequestBody RegisterPurchaseRequest request) {
-        Errors errors = purchaseStateValidator.validateObject(request);
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("A valid state must be provided for the given country");
-        }
-        return ResponseEntity.ok("Purchase registered successfully");
+    @ResponseStatus(HttpStatus.CREATED)
+    public String registerPurchase(@Valid @RequestBody RegisterPurchaseRequest request) {
+        return "Purchase registered successfully";
     }
 }

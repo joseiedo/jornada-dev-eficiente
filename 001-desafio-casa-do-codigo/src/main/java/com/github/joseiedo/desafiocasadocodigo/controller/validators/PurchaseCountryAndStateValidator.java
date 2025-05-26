@@ -13,7 +13,7 @@ import org.springframework.validation.Validator;
 
 @SuppressWarnings("unchecked")
 @Component
-public class PurchaseStateValidator implements Validator {
+public class PurchaseCountryAndStateValidator implements Validator {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -25,6 +25,7 @@ public class PurchaseStateValidator implements Validator {
 
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
+        if (errors.hasErrors()) return;
         RegisterPurchaseRequest request = (RegisterPurchaseRequest) target;
 
         Assert.notNull(request.countryId(), "Country ID must not be null");
@@ -42,9 +43,9 @@ public class PurchaseStateValidator implements Validator {
                 .stream().findFirst().orElse(null);
 
         if (country.hasStates() && request.stateId() == null) {
-            errors.rejectValue("stateId", "Country has states, state ID must be provided");
+            errors.rejectValue("stateId", "stateId", "Country has states, state ID must be provided");
         } else if (state != null && !country.containsState(state)) {
-            errors.rejectValue("stateId", "State ID does not belong to the given country");
+            errors.rejectValue("stateId", "stateId", "State ID does not belong to the given country");
         }
     }
 }

@@ -37,7 +37,7 @@ public class Book {
     private String lsbn;
     @Future
     private LocalDate publishDate;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "author_id")
     private Author author;
     @ManyToOne
