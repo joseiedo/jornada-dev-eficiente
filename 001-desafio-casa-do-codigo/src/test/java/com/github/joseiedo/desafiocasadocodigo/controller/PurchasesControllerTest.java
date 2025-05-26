@@ -4,6 +4,7 @@ import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
+import com.github.joseiedo.desafiocasadocodigo.model.purchase.Purchase;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,13 +48,13 @@ class PurchasesControllerTest {
     }
 
     @AfterEach
+    @SuppressWarnings("unchecked")
     void tearDown() {
         entityManagerWrapper.runInTransaction(em -> {
-// Again, just an example of how to handle the book and author cleanup dealing with persistence context lifecycle.
-//            em.remove(em.merge(countryWithStates));
-//            book = em.merge(book);
-//            em.remove(book);
-//            em.remove(book.getAuthor());
+            // Clean up the entities created for the test
+            em.createNativeQuery("SELECT * FROM Purchase", Purchase.class)
+                    .getResultList()
+                    .forEach(em::remove);
 
             em.remove(em.find(Country.class, countryWithStates.getId()));
             em.remove(em.find(Book.class, book.getId()));
@@ -198,7 +199,7 @@ class PurchasesControllerTest {
                     "phone": "123456789",
                     "postalCode": "12345",
                     "total": 20.0,
-                    "order": {
+                    "purchaseOrder": {
                         "total": 20.0,
                         "items": [
                             {
@@ -254,7 +255,7 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "order": {
+                    "purchaseOrder": {
                         "total": 20.0,
                         "items": [
                             {
@@ -269,7 +270,7 @@ class PurchasesControllerTest {
         mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors.['order.total']").value("Total price does not match the sum of item prices"));
+                .andExpect(jsonPath("$.errors.['purchaseOrder.total']").value("Total price does not match the sum of item prices"));
         ;
 
     }
@@ -289,7 +290,7 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "order": {
+                    "purchaseOrder": {
                         "total": 20.0,
                         "items": [
                             {
@@ -304,7 +305,7 @@ class PurchasesControllerTest {
         mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors['order.items[0].bookId']").value("Book does not exist"));
+                .andExpect(jsonPath("$.errors['purchaseOrder.items[0].bookId']").value("Book does not exist"));
     }
 
     @Test
@@ -322,7 +323,7 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "order": {
+                    "purchaseOrder": {
                         "total": 20.0,
                         "items": [
                             {
@@ -334,7 +335,9 @@ class PurchasesControllerTest {
                 }
                 """.formatted(countryWithStates.getId(), state.getId(), book.getId());
 
-        mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON).content(payload)).andExpect(status().isCreated());
-
+        mockMvc.perform(post("/purchases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated());
     }
 }

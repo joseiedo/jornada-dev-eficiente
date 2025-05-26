@@ -34,16 +34,16 @@ public class PurchaseTotalAndItemsPriceValidator implements Validator {
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         if (errors.hasErrors()) return;
         RegisterPurchaseRequest request = (RegisterPurchaseRequest) target;
-        Assert.notNull(request.order().total(), "Total must not be null");
-        Assert.notEmpty(request.order().items(), "Items must not be empty");
+        Assert.notNull(request.purchaseOrder().total(), "Total must not be null");
+        Assert.notEmpty(request.purchaseOrder().items(), "Items must not be empty");
 
-        Map<Long, RegisterPurchaseOrderItemRequest> bookIds = request.order().items().stream()
+        Map<Long, RegisterPurchaseOrderItemRequest> bookIds = request.purchaseOrder().items().stream()
                 .collect(Collectors.toMap(RegisterPurchaseOrderItemRequest::bookId, item -> item));
 
         List<Book> existingBookIds = bookRepository.findAllByIdIn(bookIds.keySet());
 
         if (existingBookIds.size() != bookIds.size()) {
-            errors.rejectValue("order.items", "items", "Some book IDs do not exist");
+            errors.rejectValue("purchaseOrder.items", "items", "Some book IDs do not exist");
         }
 
         BigDecimal expectedTotalPrice = existingBookIds.stream()
@@ -53,8 +53,8 @@ public class PurchaseTotalAndItemsPriceValidator implements Validator {
                         )
                 ).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        if (request.order().total().compareTo(expectedTotalPrice) != 0) {
-            errors.rejectValue("order.total", "total", "Total price does not match the sum of item prices");
+        if (request.purchaseOrder().total().compareTo(expectedTotalPrice) != 0) {
+            errors.rejectValue("purchaseOrder.total", "total", "Total price does not match the sum of item prices");
         }
     }
 }

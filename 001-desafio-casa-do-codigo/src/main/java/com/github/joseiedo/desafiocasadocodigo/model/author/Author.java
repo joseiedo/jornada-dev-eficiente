@@ -15,22 +15,22 @@ public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotBlank
-    String name;
+    private String name;
 
     @NotNull
     @Email
     @Column(unique = true)
-    String email;
+    private String email;
 
     @NotBlank
     @Length(max = 400)
-    String description;
+    private String description;
 
     @CreationTimestamp
-    ZonedDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.PERSIST)
     private java.util.Set<Book> books = new java.util.HashSet<>();
