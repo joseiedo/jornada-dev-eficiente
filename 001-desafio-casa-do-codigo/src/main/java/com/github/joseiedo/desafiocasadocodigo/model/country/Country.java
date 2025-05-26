@@ -18,7 +18,7 @@ public class Country {
     @NotBlank
     private String name;
 
-    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Set<State> states = new java.util.HashSet<>();
 
     @Deprecated
@@ -35,6 +35,10 @@ public class Country {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public Set<State> getStates() {
+        return states;
     }
 
     public Long getId() {

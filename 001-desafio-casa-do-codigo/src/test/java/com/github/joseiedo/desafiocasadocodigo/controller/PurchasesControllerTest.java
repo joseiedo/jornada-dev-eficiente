@@ -1,11 +1,11 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
+import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class PurchasesControllerTest {
 
+    Country countryWithStates;
+    State state;
+    Book book;
+
     @Autowired
     private MockMvc mockMvc;
-
-
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
 
     @Autowired
     private EntityManagerWrapper entityManagerWrapper;
@@ -37,15 +37,28 @@ class PurchasesControllerTest {
     @BeforeEach
     void setup() {
         entityManagerWrapper.runInTransaction(em -> {
-            em.createQuery("DELETE FROM State").executeUpdate();
-            em.createQuery("DELETE FROM Book").executeUpdate();
-            em.createQuery("DELETE FROM Author").executeUpdate();
-            em.createQuery("DELETE FROM Country").executeUpdate();
+            countryWithStates = new Country("BRAZIL");
+            state = new State("São Paulo", countryWithStates);
+            book = BookFactory.validBook().price(new BigDecimal("20.00")).build();
+            em.persist(countryWithStates);
+            em.persist(state);
+            em.persist(book);
         });
-        try (EntityManager entityManager = entityManagerFactory.createEntityManager();) {
-            entityManager.getTransaction().begin();
-            entityManager.getTransaction().commit();
-        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        entityManagerWrapper.runInTransaction(em -> {
+// Again, just an example of how to handle the book and author cleanup dealing with persistence context lifecycle.
+//            em.remove(em.merge(countryWithStates));
+//            book = em.merge(book);
+//            em.remove(book);
+//            em.remove(book.getAuthor());
+
+            em.remove(em.find(Country.class, countryWithStates.getId()));
+            em.remove(em.find(Book.class, book.getId()));
+            em.remove(em.find(Author.class, book.getAuthor().getId()));
+        });
     }
 
     @Test
@@ -171,16 +184,6 @@ class PurchasesControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenStateIsNullAndCountryHasStates() throws Exception {
-        Country countryWithStates = new Country("BRAZIL");
-        State state = new State("São Paulo", countryWithStates);
-        Book book = BookFactory.validBook().price(new BigDecimal("20.00")).build();
-
-        entityManagerWrapper.runInTransaction(em -> {
-            em.persist(countryWithStates);
-            em.persist(state);
-            em.persist(book);
-        });
-
         String payload = """
                 {
                     "email": "john.doe@example.com",
@@ -195,12 +198,15 @@ class PurchasesControllerTest {
                     "phone": "123456789",
                     "postalCode": "12345",
                     "total": 20.0,
-                    "items": [
-                        {
-                            "bookId": %d,
-                            "quantity": 1
-                        }
-                    ]
+                    "order": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
                 }
                 """.formatted(countryWithStates.getId(), book.getId());
 
@@ -235,16 +241,6 @@ class PurchasesControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenTotalDoesntMatchExpected() throws Exception {
-        Country countryWithStates = new Country("BRAZIL");
-        State state = new State("São Paulo", countryWithStates);
-        Book book = BookFactory.validBook().price(new BigDecimal("100.00")).build();
-
-        entityManagerWrapper.runInTransaction(em -> {
-            em.persist(countryWithStates);
-            em.persist(state);
-            em.persist(book);
-        });
-
         String payload = """
                 {
                     "email": "john.doe@example.com",
@@ -258,34 +254,28 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "total": 20.0,
-                    "items": [
-                        {
-                            "bookId": %d,
-                            "quantity": 1
-                        }
-                    ]
+                    "order": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 10
+                            }
+                        ]
+                    }
                 }
                 """.formatted(countryWithStates.getId(), state.getId(), book.getId());
 
         mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors.total").value("Total price does not match the sum of item prices"));
+                .andExpect(jsonPath("$.errors.['order.total']").value("Total price does not match the sum of item prices"));
         ;
 
     }
 
     @Test
     void shouldReturnBadRequestIfBooksDontExist() throws Exception {
-        Country countryWithStates = new Country("BRAZIL");
-        State state = new State("São Paulo", countryWithStates);
-
-        entityManagerWrapper.runInTransaction(em -> {
-            em.persist(countryWithStates);
-            em.persist(state);
-        });
-
         String payload = """
                 {
                     "email": "john.doe@example.com",
@@ -299,34 +289,26 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "total": 20.0,
-                    "items": [
-                        {
-                            "bookId": %d,
-                            "quantity": 1
-                        }
-                    ]
+                    "order": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
                 }
                 """.formatted(countryWithStates.getId(), state.getId(), -1);
 
         mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors['items[0].bookId']").value("Book does not exist"));
+                .andExpect(jsonPath("$.errors['order.items[0].bookId']").value("Book does not exist"));
     }
 
     @Test
     void shouldReturnCreatedWhenNoErrors() throws Exception {
-        Country countryWithStates = new Country("BRAZIL");
-        State state = new State("São Paulo", countryWithStates);
-        Book book = BookFactory.validBook().price(new BigDecimal("20.00")).build();
-
-        entityManagerWrapper.runInTransaction(em -> {
-            em.persist(countryWithStates);
-            em.persist(state);
-            em.persist(book);
-        });
-
         String payload = """
                 {
                     "email": "john.doe@example.com",
@@ -340,13 +322,15 @@ class PurchasesControllerTest {
                     "stateId": %d,
                     "phone": "123456789",
                     "postalCode": "12345",
-                    "total": 20.0,
-                    "items": [
-                        {
-                            "bookId": %d,
-                            "quantity": 1
-                        }
-                    ]
+                    "order": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
                 }
                 """.formatted(countryWithStates.getId(), state.getId(), book.getId());
 

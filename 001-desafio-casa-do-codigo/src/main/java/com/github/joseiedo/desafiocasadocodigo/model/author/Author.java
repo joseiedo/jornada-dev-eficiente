@@ -1,5 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.model.author;
 
+import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +31,9 @@ public class Author {
 
     @CreationTimestamp
     ZonedDateTime createdAt;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.PERSIST)
+    private java.util.Set<Book> books = new java.util.HashSet<>();
 
     @Deprecated
     public Author() {

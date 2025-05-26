@@ -38,10 +38,14 @@ class StateControllerTest {
     @AfterEach
     void tearDown() {
         entityManagerWrapper.runInTransaction(em -> {
-            em.createQuery("DELETE FROM State s WHERE s.country = :country")
-                    .setParameter("country", country)
-                    .executeUpdate();
-            em.remove(em.contains(country) ? country : em.merge(country));
+            // Just an example of entities lifecycle
+            // country = em.merge(country); // Get entity back to the managed state
+            // em.refresh(country); // Sync the entity with the database
+            // em.remove(country); // Delete it ;)
+
+
+            // But using a find again works, and it's better ;)
+            em.remove(em.find(Country.class, country.getId()));
         });
     }
 

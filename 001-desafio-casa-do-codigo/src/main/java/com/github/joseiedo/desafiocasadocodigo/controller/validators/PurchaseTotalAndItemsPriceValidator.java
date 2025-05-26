@@ -1,7 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.controller.validators;
 
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
-import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest.RegisterPurchaseRequestItem;
+import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest.RegisterPurchaseOrderRequest.RegisterPurchaseOrderItemRequest;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
 import org.springframework.lang.NonNull;
@@ -12,7 +12,7 @@ import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,25 +34,27 @@ public class PurchaseTotalAndItemsPriceValidator implements Validator {
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         if (errors.hasErrors()) return;
         RegisterPurchaseRequest request = (RegisterPurchaseRequest) target;
-        Assert.notNull(request.total(), "Total must not be null");
-        Assert.notEmpty(request.items(), "Items must not be empty");
+        Assert.notNull(request.order().total(), "Total must not be null");
+        Assert.notEmpty(request.order().items(), "Items must not be empty");
 
-        Set<Long> bookIds = request.items().stream()
-                .map(RegisterPurchaseRequestItem::bookId)
-                .collect(Collectors.toSet());
+        Map<Long, RegisterPurchaseOrderItemRequest> bookIds = request.order().items().stream()
+                .collect(Collectors.toMap(RegisterPurchaseOrderItemRequest::bookId, item -> item));
 
-        List<Book> existingBookIds = bookRepository.findAllByIdIn(bookIds);
+        List<Book> existingBookIds = bookRepository.findAllByIdIn(bookIds.keySet());
 
         if (existingBookIds.size() != bookIds.size()) {
-            errors.rejectValue("items", "items", "Some book IDs do not exist");
+            errors.rejectValue("order.items", "items", "Some book IDs do not exist");
         }
 
         BigDecimal expectedTotalPrice = existingBookIds.stream()
-                .map(Book::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(book -> book.getPrice()
+                        .multiply(new BigDecimal(
+                                bookIds.get(book.getId()).quantity())
+                        )
+                ).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        if (request.total().compareTo(expectedTotalPrice) != 0) {
-            errors.rejectValue("total", "total", "Total price does not match the sum of item prices");
+        if (request.order().total().compareTo(expectedTotalPrice) != 0) {
+            errors.rejectValue("order.total", "total", "Total price does not match the sum of item prices");
         }
     }
 }

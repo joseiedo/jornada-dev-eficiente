@@ -1,7 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,8 +23,8 @@ class CountryControllerTest {
     @Autowired
     private EntityManagerWrapper entityManagerWrapper;
 
-    @BeforeEach
-    void setup() {
+    @AfterEach
+    void tearDown() {
         entityManagerWrapper.runInTransaction(em -> em.createQuery("DELETE FROM Country").executeUpdate());
     }
 

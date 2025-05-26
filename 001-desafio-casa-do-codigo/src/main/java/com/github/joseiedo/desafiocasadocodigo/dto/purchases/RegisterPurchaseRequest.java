@@ -50,23 +50,31 @@ public record RegisterPurchaseRequest(
         String postalCode,
 
         @NotNull
-        @DecimalMin("1.00")
-        BigDecimal total,
-
-        @NotNull
-        @NotEmpty
         @Valid
-        List<RegisterPurchaseRequestItem> items
+        RegisterPurchaseOrderRequest order
 ) {
 
-    public record RegisterPurchaseRequestItem(
+    public record RegisterPurchaseOrderRequest(
             @NotNull
-            @ShouldExist(entity = Book.class, column = "id", message = "Book does not exist")
-            Long bookId,
+            @DecimalMin("1.00")
+            BigDecimal total,
 
             @NotNull
-            @Min(1)
-            Integer quantity
+            @NotEmpty
+            @Valid
+            List<RegisterPurchaseOrderItemRequest> items
     ) {
+
+        public record RegisterPurchaseOrderItemRequest(
+                @NotNull
+                @ShouldExist(entity = Book.class, column = "id", message = "Book does not exist")
+                Long bookId,
+
+                @NotNull
+                @Min(1)
+                Integer quantity
+        ) {
+        }
     }
+
 }

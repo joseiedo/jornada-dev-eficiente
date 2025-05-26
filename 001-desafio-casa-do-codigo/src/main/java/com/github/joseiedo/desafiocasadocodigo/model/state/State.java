@@ -30,6 +30,7 @@ public class State {
     public State(@NotBlank String name, @NotNull Country country) {
         this.name = name;
         this.country = country;
+        this.country.getStates().add(this);
     }
 
     @Override
