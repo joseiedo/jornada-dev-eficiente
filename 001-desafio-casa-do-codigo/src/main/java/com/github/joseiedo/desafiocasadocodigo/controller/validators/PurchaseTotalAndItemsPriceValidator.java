@@ -1,19 +1,12 @@
 package com.github.joseiedo.desafiocasadocodigo.controller.validators;
 
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
-import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest.RegisterPurchaseOrderRequest.RegisterPurchaseOrderItemRequest;
-import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class PurchaseTotalAndItemsPriceValidator implements Validator {
@@ -37,23 +30,7 @@ public class PurchaseTotalAndItemsPriceValidator implements Validator {
         Assert.notNull(request.purchaseOrder().total(), "Total must not be null");
         Assert.notEmpty(request.purchaseOrder().items(), "Items must not be empty");
 
-        Map<Long, RegisterPurchaseOrderItemRequest> bookIds = request.purchaseOrder().items().stream()
-                .collect(Collectors.toMap(RegisterPurchaseOrderItemRequest::bookId, item -> item));
-
-        List<Book> existingBookIds = bookRepository.findAllByIdIn(bookIds.keySet());
-
-        if (existingBookIds.size() != bookIds.size()) {
-            errors.rejectValue("purchaseOrder.items", "items", "Some book IDs do not exist");
-        }
-
-        BigDecimal expectedTotalPrice = existingBookIds.stream()
-                .map(book -> book.getPrice()
-                        .multiply(new BigDecimal(
-                                bookIds.get(book.getId()).quantity())
-                        )
-                ).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (request.purchaseOrder().total().compareTo(expectedTotalPrice) != 0) {
+        if (!request.purchaseOrder().isTotalValid(bookRepository)) {
             errors.rejectValue("purchaseOrder.total", "total", "Total price does not match the sum of item prices");
         }
     }

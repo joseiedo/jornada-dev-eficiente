@@ -3,6 +3,7 @@ package com.github.joseiedo.desafiocasadocodigo.model.purchase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,9 +27,17 @@ public class PurchaseOrder {
     public PurchaseOrder(BigDecimal total, List<PurchaseOrderItem> items) {
         this.total = total;
         this.items = items;
+        Assert.isTrue(totalIsValid(), "Total is not valid for the items provided.");
     }
 
     @Deprecated
     public PurchaseOrder() {
+    }
+
+    public Boolean totalIsValid() {
+        BigDecimal sum = items.stream()
+                .map(PurchaseOrderItem::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum.compareTo(total) == 0;
     }
 }

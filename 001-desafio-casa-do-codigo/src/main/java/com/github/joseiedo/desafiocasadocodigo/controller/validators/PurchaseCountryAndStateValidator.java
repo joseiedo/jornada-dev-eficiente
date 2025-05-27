@@ -27,25 +27,17 @@ public class PurchaseCountryAndStateValidator implements Validator {
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         if (errors.hasErrors()) return;
         RegisterPurchaseRequest request = (RegisterPurchaseRequest) target;
-
         Assert.notNull(request.countryId(), "Country ID must not be null");
 
-        Country country = (Country) entityManager.createNativeQuery("SELECT * FROM Country c WHERE c.id = :countryId", Country.class)
-                .setParameter("countryId", request.countryId())
-                .getResultList()
-                .stream().findFirst().orElse(null);
+        Country country = entityManager.find(Country.class, request.countryId());
 
-        Assert.notNull(country, "Country must not be null");
-
-        State state = (State) entityManager.createNativeQuery("SELECT * FROM State s WHERE s.id = :stateId", State.class)
-                .setParameter("stateId", request.stateId())
-                .getResultList()
-                .stream().findFirst().orElse(null);
-
-        if (country.hasStates() && request.stateId() == null) {
+        if (request.hasState()) {
+            State state = entityManager.find(State.class, request.stateId());
+            if (!country.containsState(state)) {
+                errors.rejectValue("stateId", "stateId", "State ID does not belong to the given country");
+            }
+        } else if (country.hasStates()) {
             errors.rejectValue("stateId", "stateId", "Country has states, state ID must be provided");
-        } else if (state != null && !country.containsState(state)) {
-            errors.rejectValue("stateId", "stateId", "State ID does not belong to the given country");
         }
     }
 }
