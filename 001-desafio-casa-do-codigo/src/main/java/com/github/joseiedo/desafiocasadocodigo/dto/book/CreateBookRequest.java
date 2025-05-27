@@ -1,7 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.book;
 
-import com.github.joseiedo.desafiocasadocodigo.config.ShouldExist;
-import com.github.joseiedo.desafiocasadocodigo.config.Unique;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.ShouldExist;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.Unique;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.category.Category;

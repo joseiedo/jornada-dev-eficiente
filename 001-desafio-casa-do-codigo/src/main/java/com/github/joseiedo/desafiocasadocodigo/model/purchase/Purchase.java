@@ -1,13 +1,14 @@
 package com.github.joseiedo.desafiocasadocodigo.model.purchase;
 
-import com.github.joseiedo.desafiocasadocodigo.dto.purchases.CpfOrCnpj;
-import com.github.joseiedo.desafiocasadocodigo.dto.purchases.NoLetters;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.CpfOrCnpj;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.NoLetters;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.lang.NonNull;
 
 @Entity
 public class Purchase {
@@ -106,42 +107,42 @@ public class Purchase {
         private String postalCode;
         private PurchaseOrder purchaseOrder;
 
-        public PurchaseBuilder email(String email) {
+        public PurchaseBuilder email(@Email @NotBlank String email) {
             this.email = email;
             return this;
         }
 
-        public PurchaseBuilder firstName(String firstName) {
+        public PurchaseBuilder firstName(@NotBlank String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public PurchaseBuilder lastName(String lastName) {
+        public PurchaseBuilder lastName(@NotBlank String lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public PurchaseBuilder document(String document) {
+        public PurchaseBuilder document(@NotBlank String document) {
             this.document = document;
             return this;
         }
 
-        public PurchaseBuilder address(String address) {
+        public PurchaseBuilder address(@NotBlank String address) {
             this.address = address;
             return this;
         }
 
-        public PurchaseBuilder complement(String complement) {
+        public PurchaseBuilder complement(@NotBlank String complement) {
             this.complement = complement;
             return this;
         }
 
-        public PurchaseBuilder city(String city) {
+        public PurchaseBuilder city(@NotBlank String city) {
             this.city = city;
             return this;
         }
 
-        public PurchaseBuilder country(Country country) {
+        public PurchaseBuilder country(@NonNull Country country) {
             this.country = country;
             return this;
         }
@@ -151,17 +152,17 @@ public class Purchase {
             return this;
         }
 
-        public PurchaseBuilder phone(String phone) {
+        public PurchaseBuilder phone(@NotBlank String phone) {
             this.phone = phone;
             return this;
         }
 
-        public PurchaseBuilder postalCode(String postalCode) {
+        public PurchaseBuilder postalCode(@NonNull String postalCode) {
             this.postalCode = postalCode;
             return this;
         }
 
-        public PurchaseBuilder order(PurchaseOrder purchaseOrder) {
+        public PurchaseBuilder order(@NonNull PurchaseOrder purchaseOrder) {
             this.purchaseOrder = purchaseOrder;
             return this;
         }

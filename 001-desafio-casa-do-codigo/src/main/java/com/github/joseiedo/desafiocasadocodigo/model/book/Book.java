@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.model.book;
 
-import com.github.joseiedo.desafiocasadocodigo.config.Unique;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.Unique;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.category.Category;
 import jakarta.persistence.*;

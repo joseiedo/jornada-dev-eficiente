@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo.dto.purchases;
+package com.github.joseiedo.desafiocasadocodigo.config.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.ReportAsSingleViolation;

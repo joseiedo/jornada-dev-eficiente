@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo.config;
+package com.github.joseiedo.desafiocasadocodigo.config.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

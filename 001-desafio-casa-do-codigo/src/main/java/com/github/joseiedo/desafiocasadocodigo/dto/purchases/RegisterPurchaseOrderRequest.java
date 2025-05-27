@@ -28,7 +28,7 @@ public record RegisterPurchaseOrderRequest(
 ) {
 
     public PurchaseOrder toModel(EntityManager entityManager) {
-        List<PurchaseOrderItem> items = this.items.stream().map(item -> item.toModel(entityManager)).toList();
+        @NotEmpty List<PurchaseOrderItem> items = this.items.stream().map(item -> item.toModel(entityManager)).toList();
         return new PurchaseOrder(this.total(), items);
     }
 

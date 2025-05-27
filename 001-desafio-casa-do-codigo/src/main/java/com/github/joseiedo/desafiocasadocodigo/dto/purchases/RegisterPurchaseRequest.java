@@ -1,6 +1,8 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.purchases;
 
-import com.github.joseiedo.desafiocasadocodigo.config.ShouldExist;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.CpfOrCnpj;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.NoLetters;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.ShouldExist;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.Purchase;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.PurchaseOrder;

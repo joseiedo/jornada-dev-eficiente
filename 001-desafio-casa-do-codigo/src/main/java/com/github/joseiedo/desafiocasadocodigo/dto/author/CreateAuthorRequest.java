@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.author;
 
-import com.github.joseiedo.desafiocasadocodigo.config.Unique;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.Unique;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

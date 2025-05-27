@@ -1,11 +1,12 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.purchases;
 
-import com.github.joseiedo.desafiocasadocodigo.config.ShouldExist;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.ShouldExist;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.PurchaseOrderItem;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public record RegisterPurchaseOrderItemRequest(
         return new PurchaseOrderItem(book, quantity);
     }
 
-    public BigDecimal getTotalPrice(Book book) {
+    public BigDecimal getTotalPrice(@NonNull Book book) {
         Assert.notNull(book, "Book must not be null");
         return book.getPrice().multiply(new BigDecimal(quantity));
     }

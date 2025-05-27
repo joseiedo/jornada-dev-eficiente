@@ -1,7 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.state;
 
-import com.github.joseiedo.desafiocasadocodigo.config.ShouldExist;
-import com.github.joseiedo.desafiocasadocodigo.config.UniqueIgnoreCase;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.ShouldExist;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.UniqueIgnoreCase;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
 import jakarta.persistence.EntityManager;

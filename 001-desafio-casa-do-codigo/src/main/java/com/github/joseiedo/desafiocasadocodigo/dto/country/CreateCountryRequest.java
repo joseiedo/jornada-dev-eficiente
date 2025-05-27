@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.country;
 
-import com.github.joseiedo.desafiocasadocodigo.config.UniqueIgnoreCase;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.UniqueIgnoreCase;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import jakarta.validation.constraints.NotBlank;
 

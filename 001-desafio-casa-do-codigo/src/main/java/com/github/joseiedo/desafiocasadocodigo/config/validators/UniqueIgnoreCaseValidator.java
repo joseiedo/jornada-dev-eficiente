@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo.config;
+package com.github.joseiedo.desafiocasadocodigo.config.validators;
 
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintValidator;

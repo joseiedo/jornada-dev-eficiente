@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.dto.category;
 
-import com.github.joseiedo.desafiocasadocodigo.config.Unique;
+import com.github.joseiedo.desafiocasadocodigo.config.validators.Unique;
 import com.github.joseiedo.desafiocasadocodigo.model.category.Category;
 import jakarta.validation.constraints.NotBlank;
 

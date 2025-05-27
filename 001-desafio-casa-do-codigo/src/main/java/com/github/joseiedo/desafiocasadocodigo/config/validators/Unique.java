@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo.config;
+package com.github.joseiedo.desafiocasadocodigo.config.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-@Constraint(validatedBy = UniqueIgnoreCaseValidator.class)
+@Constraint(validatedBy = UniqueValidator.class)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-public @interface UniqueIgnoreCase {
+public @interface Unique {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
@@ -20,5 +20,5 @@ public @interface UniqueIgnoreCase {
 
     String column();
 
-    String message() default "{com.github.joseiedo.desafiocasadocodigo.config.Unique.message}";
+    String message() default "{com.github.joseiedo.desafiocasadocodigo.config.validators.Unique.message}";
 }
