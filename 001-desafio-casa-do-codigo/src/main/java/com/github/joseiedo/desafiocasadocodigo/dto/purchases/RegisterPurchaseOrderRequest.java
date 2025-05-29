@@ -28,7 +28,10 @@ public record RegisterPurchaseOrderRequest(
 ) {
 
     public PurchaseOrder toModel(EntityManager entityManager) {
-        @NotEmpty List<PurchaseOrderItem> items = this.items.stream().map(item -> item.toModel(entityManager)).toList();
+        List<PurchaseOrderItem> items = this.items
+                .stream()
+                .map(item -> item.toModel(entityManager)).toList();
+
         return new PurchaseOrder(this.total(), items);
     }
 
@@ -38,7 +41,7 @@ public record RegisterPurchaseOrderRequest(
         Assert.isTrue(books.size() == itemsGroupedByBookID.size(), "Received items size differs from found books size");
 
         BigDecimal sum = books.stream()
-                .map(book -> itemsGroupedByBookID.get(book.getId()).getTotalPrice(book))
+                .map(book -> itemsGroupedByBookID.get(book.getId()).getTotalPrice(bookRepository))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return sum.compareTo(total) == 0;
