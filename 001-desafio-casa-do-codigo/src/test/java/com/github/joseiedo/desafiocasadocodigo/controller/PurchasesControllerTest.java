@@ -1,6 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
+import com.github.joseiedo.desafiocasadocodigo.fakers.BookFaker;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
@@ -40,7 +41,7 @@ class PurchasesControllerTest {
         entityManagerWrapper.runInTransaction(em -> {
             countryWithStates = new Country("BRAZIL");
             state = new State("São Paulo", countryWithStates);
-            book = BookFactory.validBook().price(new BigDecimal("20.00")).build();
+            book = BookFaker.validBook().price(new BigDecimal("20.00")).build();
             em.persist(countryWithStates);
             em.persist(state);
             em.persist(book);
