@@ -29,6 +29,7 @@ class BookControllerTest {
     Author author;
     Category category;
     LocalDate publishDate;
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -325,7 +326,7 @@ class BookControllerTest {
                 }
                 """.formatted(publishDate.toString(), category.getId(), author.getId());
 
-        Long createdBookId = ((Number) JsonPath.parse(mockMvc.perform(post("/books")
+        long createdBookId = ((Number) JsonPath.parse(mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayload))
                 .andExpect(status().isOk())

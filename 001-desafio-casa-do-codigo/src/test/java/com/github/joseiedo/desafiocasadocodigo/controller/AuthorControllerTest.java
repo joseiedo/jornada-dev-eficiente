@@ -1,6 +1,12 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepository;
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Property;
+import net.jqwik.api.constraints.AlphaChars;
+import net.jqwik.api.constraints.StringLength;
+import net.jqwik.spring.JqwikSpringSupport;
+import net.jqwik.web.api.Email;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@JqwikSpringSupport
 class AuthorControllerTest {
 
     @Autowired
@@ -106,15 +113,19 @@ class AuthorControllerTest {
                 .andExpect(jsonPath("$.errors.email").value("Email already registered"));
     }
 
-    @Test
-    void shouldCreateAuthorWhenValid() throws Exception {
+    @Property(tries = 10)
+    void shouldCreateAuthorWhenValid(
+            @ForAll @AlphaChars @StringLength(min = 1, max = 255) String name,
+            @ForAll @AlphaChars @Email String email,
+            @ForAll @AlphaChars @StringLength(min = 1, max = 255) String description
+    ) throws Exception {
         String jsonPayload = """
                 {
-                    "name": "John Doe",
-                    "email": "johndoe@example.com",
-                    "description": "Author of several books"
+                    "name": "%s",
+                    "email": "%s",
+                    "description": "%s"
                 }
-                """;
+                """.formatted(name, email, description);
 
         this.mockMvc
                 .perform(post("/authors")
