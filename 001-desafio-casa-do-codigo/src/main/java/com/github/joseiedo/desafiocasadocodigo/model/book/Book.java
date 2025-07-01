@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class Book {
@@ -78,6 +79,18 @@ public class Book {
                 ", author=" + author +
                 ", category=" + category +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(title, book.title) && Objects.equals(overview, book.overview) && Objects.equals(summary, book.summary) && Objects.equals(price, book.price) && Objects.equals(numberOfPages, book.numberOfPages) && Objects.equals(lsbn, book.lsbn) && Objects.equals(publishDate, book.publishDate) && Objects.equals(author, book.author) && Objects.equals(category, book.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, overview, summary, price, numberOfPages, lsbn, publishDate, author, category);
     }
 
     public Long getId() {

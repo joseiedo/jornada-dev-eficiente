@@ -5,6 +5,8 @@ import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.constraints.AlphaChars;
 import net.jqwik.api.constraints.StringLength;
+import net.jqwik.api.constraints.UniqueChars;
+import net.jqwik.api.constraints.UniqueElements;
 import net.jqwik.spring.JqwikSpringSupport;
 import net.jqwik.web.api.Email;
 import org.junit.jupiter.api.AfterEach;
@@ -116,7 +118,7 @@ class AuthorControllerTest {
     @Property(tries = 10)
     void shouldCreateAuthorWhenValid(
             @ForAll @AlphaChars @StringLength(min = 1, max = 255) String name,
-            @ForAll @AlphaChars @Email String email,
+            @ForAll @AlphaChars @Email @UniqueElements @UniqueChars String email,
             @ForAll @AlphaChars @StringLength(min = 1, max = 255) String description
     ) throws Exception {
         String jsonPayload = """

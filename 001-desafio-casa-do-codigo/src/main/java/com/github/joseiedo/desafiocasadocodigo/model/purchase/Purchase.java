@@ -3,12 +3,14 @@ package com.github.joseiedo.desafiocasadocodigo.model.purchase;
 import com.github.joseiedo.desafiocasadocodigo.config.validators.CpfOrCnpj;
 import com.github.joseiedo.desafiocasadocodigo.config.validators.NoLetters;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
+import com.github.joseiedo.desafiocasadocodigo.model.coupon.Coupon;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 
 @Entity
 public class Purchase {
@@ -61,6 +63,10 @@ public class Purchase {
     @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
+
     @Deprecated
     public Purchase() {
     }
@@ -91,6 +97,68 @@ public class Purchase {
                 ", email='" + email + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public PurchaseOrder getPurchaseOrder() {
+        return purchaseOrder;
+    }
+
+    public Coupon getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(Coupon coupon) {
+        Assert.notNull(coupon, "Coupon must not be null");
+        Assert.isTrue(!coupon.isExpired(), "Coupon is expired");
+        this.coupon = coupon;
     }
 
     public static class PurchaseBuilder {

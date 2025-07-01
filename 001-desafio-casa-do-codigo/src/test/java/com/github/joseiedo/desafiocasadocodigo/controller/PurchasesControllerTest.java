@@ -2,11 +2,18 @@ package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
 import com.github.joseiedo.desafiocasadocodigo.fakers.BookFaker;
-import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
+import com.github.joseiedo.desafiocasadocodigo.fakers.CouponFaker;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
+import com.github.joseiedo.desafiocasadocodigo.model.coupon.Coupon;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.Purchase;
+import com.github.joseiedo.desafiocasadocodigo.model.purchase.PurchaseOrder;
+import com.github.joseiedo.desafiocasadocodigo.model.purchase.PurchaseOrderItem;
 import com.github.joseiedo.desafiocasadocodigo.model.state.State;
+import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepository;
+import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
+import com.github.joseiedo.desafiocasadocodigo.repository.purchase.CouponRepository;
+import com.github.joseiedo.desafiocasadocodigo.repository.purchase.PurchaseRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +38,7 @@ class PurchasesControllerTest {
     Country countryWithStates;
     State state;
     Book book;
+    Coupon validCoupon;
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,30 +46,43 @@ class PurchasesControllerTest {
     @Autowired
     private EntityManagerWrapper entityManagerWrapper;
 
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
+
     @BeforeEach
     void setup() {
+        book = BookFaker.validBook().price(new BigDecimal("20.00")).build();
+        validCoupon = CouponFaker.validCoupon().build();
+        couponRepository.save(validCoupon);
+        bookRepository.save(book);
+
         entityManagerWrapper.runInTransaction(em -> {
+
             countryWithStates = new Country("BRAZIL");
             state = new State("São Paulo", countryWithStates);
-            book = BookFaker.validBook().price(new BigDecimal("20.00")).build();
             em.persist(countryWithStates);
             em.persist(state);
-            em.persist(book);
         });
     }
 
     @AfterEach
-    @SuppressWarnings("unchecked")
     void tearDown() {
-        entityManagerWrapper.runInTransaction(em -> {
-            // Clean up the entities created for the test
-            em.createNativeQuery("SELECT * FROM Purchase", Purchase.class)
-                    .getResultList()
-                    .forEach(em::remove);
+        purchaseRepository.deleteAll();
+        couponRepository.deleteAll();
+        bookRepository.deleteAll();
+        authorRepository.deleteAll();
 
+        entityManagerWrapper.runInTransaction(em -> {
             em.remove(em.find(Country.class, countryWithStates.getId()));
-            em.remove(em.find(Book.class, book.getId()));
-            em.remove(em.find(Author.class, book.getAuthor().getId()));
         });
     }
 
@@ -310,6 +333,40 @@ class PurchasesControllerTest {
     }
 
     @Test
+    void shouldReturnBadRequestIfCouponDontExist() throws Exception {
+        String payload = """
+                {
+                    "email": "john.doe@example.com",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "document": "142.809.830-54",
+                    "address": "123 Main St",
+                    "complement": "Apt 4B",
+                    "city": "Springfield",
+                    "couponId": -1,
+                    "countryId": %d,
+                    "stateId": %d,
+                    "phone": "123456789",
+                    "postalCode": "12345",
+                    "purchaseOrder": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
+                }
+                """.formatted(countryWithStates.getId(), state.getId(), book.getId());
+
+        mockMvc.perform(post("/purchases").contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.couponId").value("Coupon does not exist"));
+    }
+
+    @Test
     void shouldReturnCreatedWhenNoErrors() throws Exception {
         String payload = """
                 {
@@ -340,5 +397,70 @@ class PurchasesControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldReturnCreatedWithCouponWhenNoErrors() throws Exception {
+        String payload = """
+                {
+                    "email": "john.doe@example.com",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "document": "142.809.830-54",
+                    "address": "123 Main St",
+                    "complement": "Apt 4B",
+                    "city": "Springfield",
+                    "couponId": %d,
+                    "countryId": %d,
+                    "stateId": %d,
+                    "phone": "123456789",
+                    "postalCode": "12345",
+                    "purchaseOrder": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
+                }
+                """.formatted(validCoupon.getId(), countryWithStates.getId(), state.getId(), book.getId());
+
+        Long purchaseId = Long.parseLong(mockMvc.perform(post("/purchases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString());
+
+        assertNotNull(purchaseId);
+
+        Purchase purchase = purchaseRepository.findById(purchaseId).orElseThrow(IllegalArgumentException::new);
+        assertNotNull(purchase);
+
+        State purchaseState = purchase.getState();
+        assertNotNull(purchaseState);
+        assertEquals(state, purchaseState);
+
+        Country purchaseCountry = purchase.getCountry();
+        assertNotNull(purchaseCountry);
+        assertEquals(countryWithStates.getId(), purchaseCountry.getId());
+
+        PurchaseOrder purchaseOrder = purchase.getPurchaseOrder();
+        assertNotNull(purchaseOrder);
+        assertEquals(1, purchaseOrder.getItems().size());
+        assertEquals(new BigDecimal("20.00"), purchaseOrder.getTotal());
+
+        PurchaseOrderItem item = purchaseOrder.getItems().get(0);
+        assertNotNull(item);
+        assertEquals(book, item.getBook());
+        assertEquals(1, item.getQuantity());
+        assertEquals(book.getPrice(), item.getPriceAtMoment());
+
+        Coupon coupon = purchase.getCoupon();
+        assertNotNull(coupon);
+        assertEquals(validCoupon, coupon);
     }
 }

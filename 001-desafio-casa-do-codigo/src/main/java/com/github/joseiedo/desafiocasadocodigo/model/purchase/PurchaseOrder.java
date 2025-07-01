@@ -23,7 +23,7 @@ public class PurchaseOrder {
     private BigDecimal total;
 
     @NotNull
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
     private List<PurchaseOrderItem> items;
 
@@ -37,6 +37,18 @@ public class PurchaseOrder {
 
     @Deprecated
     public PurchaseOrder() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public List<PurchaseOrderItem> getItems() {
+        return items;
     }
 
     public Boolean totalIsValid() {

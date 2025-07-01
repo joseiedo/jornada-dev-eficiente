@@ -2,8 +2,10 @@ package com.github.joseiedo.desafiocasadocodigo.controller;
 
 import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseCountryAndStateValidator;
 import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseTotalAndItemsPriceValidator;
+import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseValidCouponValidator;
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.Purchase;
+import com.github.joseiedo.desafiocasadocodigo.repository.purchase.PurchaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -16,20 +18,29 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/purchases")
 public class PurchasesController {
 
+//    o código do cupom precisa ser válido
+//    o cupom precisa ser válido ainda
+//    uma vez associado o cupom, uma compra nunca pode ter essa informação alterada.
+//    O cupom só pode ser associada com uma compra que ainda não foi registrada no banco de dados (esse daqui eu não implementei)
+
     private final PurchaseCountryAndStateValidator purchaseStateValidator;
     private final PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator;
+    private final PurchaseValidCouponValidator validCouponValidator;
+    private final PurchaseRepository purchaseRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public PurchasesController(PurchaseCountryAndStateValidator purchaseStateValidator, PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator) {
+    public PurchasesController(PurchaseCountryAndStateValidator purchaseStateValidator, PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator, PurchaseValidCouponValidator purchaseValidCouponValidator, PurchaseRepository purchaseRepository) {
         this.purchaseStateValidator = purchaseStateValidator;
         this.purchaseTotalPriceValidator = purchaseTotalPriceValidator;
+        this.validCouponValidator = purchaseValidCouponValidator;
+        this.purchaseRepository = purchaseRepository;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(purchaseStateValidator, purchaseTotalPriceValidator);
+        binder.addValidators(purchaseStateValidator, purchaseTotalPriceValidator, validCouponValidator);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,7 +48,7 @@ public class PurchasesController {
     @PostMapping
     public String registerPurchase(@Valid @RequestBody RegisterPurchaseRequest request) {
         Purchase purchase = request.toModel(entityManager);
-        entityManager.persist(purchase);
-        return purchase.toString();
+        purchaseRepository.save(purchase);
+        return purchase.getId().toString();
     }
 }

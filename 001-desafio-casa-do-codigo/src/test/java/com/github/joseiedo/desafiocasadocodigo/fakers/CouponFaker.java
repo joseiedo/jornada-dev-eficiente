@@ -13,4 +13,11 @@ public class CouponFaker {
                 .discountPercentage(new BigDecimal("10.0"))
                 .expirationDate(LocalDate.now().plusDays(30));
     }
+
+    public static Coupon.CouponBuilder expiredCoupon() {
+        return Coupon.builder()
+                .code("EXPIREDCOUPON")
+                .discountPercentage(new BigDecimal("5.0"))
+                .expirationDate(LocalDate.now().minusDays(1));
+    }
 }

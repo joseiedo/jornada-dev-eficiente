@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -51,5 +52,17 @@ public class Country {
 
     public Boolean hasStates() {
         return !states.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return Objects.equals(name, country.name) && Objects.equals(states, country.states);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, states);
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 @Entity
 public class Author {
@@ -54,6 +55,18 @@ public class Author {
                 ", description='" + description + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return Objects.equals(name, author.name) && Objects.equals(email, author.email) && Objects.equals(description, author.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, description);
     }
 
     public Long getId() {

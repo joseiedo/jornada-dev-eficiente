@@ -35,4 +35,16 @@ public class PurchaseOrderItem {
     public BigDecimal getTotal() {
         return priceAtMoment.multiply(new BigDecimal(quantity));
     }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public BigDecimal getPriceAtMoment() {
+        return priceAtMoment;
+    }
 }

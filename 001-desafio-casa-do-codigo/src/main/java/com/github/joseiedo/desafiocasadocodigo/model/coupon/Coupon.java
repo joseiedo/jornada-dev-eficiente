@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class Coupon {
@@ -73,6 +74,26 @@ public class Coupon {
 
     public LocalDate getExpirationDate() {
         return expirationDate;
+    }
+
+    public Boolean isExpired() {
+        return expirationDate.isBefore(LocalDate.now());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Coupon coupon = (Coupon) o;
+        return Objects.equals(code, coupon.code) && Objects.equals(discountPercentage.doubleValue(), coupon.discountPercentage.doubleValue()) && Objects.equals(expirationDate, coupon.expirationDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, discountPercentage, expirationDate);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public static class CouponBuilder {
