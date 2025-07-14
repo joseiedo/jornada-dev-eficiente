@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo.fakers;
+package com.github.joseiedo.desafiocasadocodigo.shared.fakers;
 
 import com.github.joseiedo.desafiocasadocodigo.model.coupon.Coupon;
 

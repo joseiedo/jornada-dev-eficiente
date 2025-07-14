@@ -1,9 +1,9 @@
 package com.github.joseiedo.desafiocasadocodigo.model.purchase;
 
-import com.github.joseiedo.desafiocasadocodigo.fakers.BookFaker;
 import com.github.joseiedo.desafiocasadocodigo.model.author.Author;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.category.Category;
+import com.github.joseiedo.desafiocasadocodigo.shared.fakers.BookFaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

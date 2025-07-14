@@ -2,6 +2,7 @@ package com.github.joseiedo.desafiocasadocodigo.controller.validators;
 
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
 import com.github.joseiedo.desafiocasadocodigo.model.coupon.Coupon;
+import com.github.joseiedo.desafiocasadocodigo.repository.purchase.PurchaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
@@ -11,8 +12,16 @@ import org.springframework.validation.Validator;
 @Component
 public class PurchaseValidCouponValidator implements Validator {
 
+
     @PersistenceContext
     private EntityManager entityManager;
+
+    private PurchaseRepository purchaseRepository;
+
+    public PurchaseValidCouponValidator(EntityManager entityManager, PurchaseRepository purchaseRepository) {
+        this.entityManager = entityManager;
+        this.purchaseRepository = purchaseRepository;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -36,9 +45,7 @@ public class PurchaseValidCouponValidator implements Validator {
             return;
         }
 
-        Boolean couponUsed = entityManager.createQuery("SELECT COUNT(p) > 0 FROM Purchase p WHERE p.coupon.id = :couponId", Boolean.class)
-                .setParameter("couponId", request.couponId())
-                .getSingleResult();
+        Boolean couponUsed = purchaseRepository.existsByCouponId(request.couponId());
 
         if (couponUsed) {
             errors.rejectValue("couponId", "coupon.already.used", "Coupon has already been used for another purchase");

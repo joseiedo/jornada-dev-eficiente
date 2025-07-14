@@ -1,8 +1,5 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
-import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
-import com.github.joseiedo.desafiocasadocodigo.fakers.BookFaker;
-import com.github.joseiedo.desafiocasadocodigo.fakers.CouponFaker;
 import com.github.joseiedo.desafiocasadocodigo.model.book.Book;
 import com.github.joseiedo.desafiocasadocodigo.model.country.Country;
 import com.github.joseiedo.desafiocasadocodigo.model.coupon.Coupon;
@@ -14,6 +11,9 @@ import com.github.joseiedo.desafiocasadocodigo.repository.author.AuthorRepositor
 import com.github.joseiedo.desafiocasadocodigo.repository.book.BookRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.purchase.CouponRepository;
 import com.github.joseiedo.desafiocasadocodigo.repository.purchase.PurchaseRepository;
+import com.github.joseiedo.desafiocasadocodigo.shared.EntityManagerWrapper;
+import com.github.joseiedo.desafiocasadocodigo.shared.fakers.BookFaker;
+import com.github.joseiedo.desafiocasadocodigo.shared.fakers.CouponFaker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

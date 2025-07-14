@@ -18,6 +18,10 @@ public class PurchaseCountryAndStateValidator implements Validator {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public PurchaseCountryAndStateValidator(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz.isAssignableFrom(RegisterPurchaseRequest.class);

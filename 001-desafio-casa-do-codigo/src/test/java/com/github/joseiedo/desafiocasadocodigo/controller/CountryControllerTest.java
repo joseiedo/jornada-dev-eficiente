@@ -1,6 +1,6 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
-import com.github.joseiedo.desafiocasadocodigo.EntityManagerWrapper;
+import com.github.joseiedo.desafiocasadocodigo.shared.EntityManagerWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

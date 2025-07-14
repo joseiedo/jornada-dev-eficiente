@@ -1,4 +1,4 @@
-package com.github.joseiedo.desafiocasadocodigo;
+package com.github.joseiedo.desafiocasadocodigo.shared;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
