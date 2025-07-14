@@ -1,8 +1,10 @@
 package com.github.joseiedo.desafiocasadocodigo.controller;
 
+import com.github.joseiedo.desafiocasadocodigo.config.exception.NotFoundException;
 import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseCountryAndStateValidator;
 import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseTotalAndItemsPriceValidator;
 import com.github.joseiedo.desafiocasadocodigo.controller.validators.PurchaseValidCouponValidator;
+import com.github.joseiedo.desafiocasadocodigo.dto.purchases.GetPurchaseResponse;
 import com.github.joseiedo.desafiocasadocodigo.dto.purchases.RegisterPurchaseRequest;
 import com.github.joseiedo.desafiocasadocodigo.model.purchase.Purchase;
 import com.github.joseiedo.desafiocasadocodigo.repository.purchase.PurchaseRepository;
@@ -17,11 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/purchases")
 public class PurchasesController {
-
-//    o código do cupom precisa ser válido
-//    o cupom precisa ser válido ainda
-//    uma vez associado o cupom, uma compra nunca pode ter essa informação alterada.
-//    O cupom só pode ser associada com uma compra que ainda não foi registrada no banco de dados (esse daqui eu não implementei)
 
     private final PurchaseCountryAndStateValidator purchaseStateValidator;
     private final PurchaseTotalAndItemsPriceValidator purchaseTotalPriceValidator;
@@ -50,5 +47,13 @@ public class PurchasesController {
         Purchase purchase = request.toModel(entityManager);
         purchaseRepository.save(purchase);
         return purchase.getId().toString();
+    }
+
+    @GetMapping("/{id}")
+    public GetPurchaseResponse getPurchase(@PathVariable Long id) {
+        Purchase purchase = purchaseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Purchase not found with id: " + id));
+
+        return GetPurchaseResponse.from(purchase);
     }
 }

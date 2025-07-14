@@ -1,6 +1,7 @@
 package com.github.joseiedo.desafiocasadocodigo.model.coupon;
 
 import com.github.joseiedo.desafiocasadocodigo.config.validators.Unique;
+import com.github.joseiedo.desafiocasadocodigo.model.purchase.PurchaseOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -70,6 +72,15 @@ public class Coupon {
 
     public BigDecimal getDiscountPercentage() {
         return discountPercentage;
+    }
+
+    public BigDecimal applyDiscount(PurchaseOrder purchaseOrder) {
+        BigDecimal total = purchaseOrder.getTotal();
+        if (isExpired()) {
+            return total;
+        }
+        BigDecimal discountAmount = total.multiply(discountPercentage).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_EVEN);
+        return total.subtract(discountAmount);
     }
 
     public LocalDate getExpirationDate() {

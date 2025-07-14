@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -462,5 +463,111 @@ class PurchasesControllerTest {
         Coupon coupon = purchase.getCoupon();
         assertNotNull(coupon);
         assertEquals(validCoupon, coupon);
+    }
+
+    @Test
+    void shouldReturnPurchaseDetailsWhenPurchaseExists() throws Exception {
+        String payload = """
+                {
+                    "email": "john.doe@example.com",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "document": "142.809.830-54",
+                    "address": "123 Main St",
+                    "complement": "Apt 4B",
+                    "city": "Springfield",
+                    "countryId": %d,
+                    "stateId": %d,
+                    "phone": "123456789",
+                    "postalCode": "12345",
+                    "purchaseOrder": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
+                }
+                """.formatted(countryWithStates.getId(), state.getId(), book.getId());
+
+        String response = mockMvc.perform(post("/purchases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Long purchaseId = Long.parseLong(response);
+
+        mockMvc.perform(get("/purchases/" + purchaseId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(purchaseId))
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.countryId").value(countryWithStates.getId()))
+                .andExpect(jsonPath("$.stateId").value(state.getId()))
+                .andExpect(jsonPath("$.purchaseOrder.items[0].bookTitle").value(book.getTitle()));
+
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenPurchaseDoesNotExist() throws Exception {
+        mockMvc.perform(get("/purchases/999999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnPurchaseDetailsWithCouponWhenPurchaseExists() throws Exception {
+        String payload = """
+                {
+                    "email": "john.doe@example.com",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "document": "142.809.830-54",
+                    "address": "123 Main St",
+                    "complement": "Apt 4B",
+                    "city": "Springfield",
+                    "countryId": %d,
+                    "stateId": %d,
+                    "couponId": %d,
+                    "phone": "123456789",
+                    "postalCode": "12345",
+                    "purchaseOrder": {
+                        "total": 20.0,
+                        "items": [
+                            {
+                                "bookId": %d,
+                                "quantity": 1
+                            }
+                        ]
+                    }
+                }
+                """.formatted(countryWithStates.getId(), state.getId(), validCoupon.getId(), book.getId());
+
+        String response = mockMvc.perform(post("/purchases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Long purchaseId = Long.parseLong(response);
+
+        mockMvc.perform(get("/purchases/" + purchaseId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(purchaseId))
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.countryId").value(countryWithStates.getId()))
+                .andExpect(jsonPath("$.stateId").value(state.getId()))
+                .andExpect(jsonPath("$.hasCoupon").value(true))
+                .andExpect(jsonPath("$.purchaseOrder.items[0].bookTitle").value(book.getTitle()))
+                .andExpect(jsonPath("$.totalWithDiscount").value(new BigDecimal("18.0")));
     }
 }

@@ -12,6 +12,8 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Purchase {
 
@@ -159,6 +161,17 @@ public class Purchase {
         Assert.notNull(coupon, "Coupon must not be null");
         Assert.isTrue(!coupon.isExpired(), "Coupon is expired");
         this.coupon = coupon;
+    }
+
+    public Boolean hasCoupon() {
+        return coupon != null;
+    }
+
+    public BigDecimal getTotalWithDiscount() {
+        if (coupon == null) {
+            return null;
+        }
+        return coupon.applyDiscount(purchaseOrder);
     }
 
     public static class PurchaseBuilder {
