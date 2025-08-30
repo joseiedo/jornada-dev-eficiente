@@ -3,6 +3,7 @@ package br.com.joseiedo.desafioyfood.controllers;
 import br.com.joseiedo.desafioyfood.domain.FormaPagamento;
 import br.com.joseiedo.desafioyfood.domain.Restaurante;
 import br.com.joseiedo.desafioyfood.domain.Usuario;
+import br.com.joseiedo.desafioyfood.exceptions.NotFoundException;
 import br.com.joseiedo.desafioyfood.repository.RestauranteRepository;
 import br.com.joseiedo.desafioyfood.repository.UsuarioRepository;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,10 @@ public class RestauranteController {
             @PathVariable Long usuarioId) {
         
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
-                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado"));
+                .orElseThrow(() -> new NotFoundException(Restaurante.class, restauranteId));
         
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new NotFoundException(Usuario.class, usuarioId));
         
         Set<FormaPagamento> formasCompatíveis = restaurante.getFormasCompatíveisCom(usuario.getFormasPagamento());
         

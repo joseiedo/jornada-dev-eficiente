@@ -72,3 +72,5 @@ Códigos de mapeamentos entidade -> DTO precisam ficar na classe do DTOn
 - Use @Deprecated in all empty constructors that are needed because of JPA. 
 Add the used annotations in the fields also in the constructor parameters (just for documentation, it doesnt matter if the validation will ocurr)
 - do not automatically add getters and setters that are not being used
+- For tests, avoid mocks. To create entities data, use the object mother pattern, ex:
+UsuarioFactory is a static class with a createWithFormaDePagamentoCartao method and many others.
