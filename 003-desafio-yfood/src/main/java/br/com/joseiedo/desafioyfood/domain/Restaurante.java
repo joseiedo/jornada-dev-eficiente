@@ -3,10 +3,12 @@ package br.com.joseiedo.desafioyfood.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.util.Assert;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Restaurante {
@@ -32,9 +34,12 @@ public class Restaurante {
         this.nome = nome;
         this.formasPagamentoAceitas = new HashSet<>(formasPagamentoAceitas);
     }
-    
-    public Set<FormaPagamento> getFormasCompativeisCom(Set<FormaPagamento> formasUsuario) {
-        return FormaPagamento.getFormasCompativeis(formasPagamentoAceitas, formasUsuario);
+
+    public Set<FormaPagamento> getFormasCompativeisComUsuario(Usuario usuario, Set<RegraFraude> regras) {
+        Set<FormaPagamento> formasUsuarioFiltradas = usuario.getFormasPagamentoFiltrandoPorRegras(regras);
+        return formasPagamentoAceitas.stream()
+                .filter(formasUsuarioFiltradas::contains)
+                .collect(Collectors.toSet());
     }
     
     public Long getId() {
