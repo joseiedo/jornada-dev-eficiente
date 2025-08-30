@@ -1,7 +1,6 @@
 package br.com.joseiedo.desafioyfood.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -21,8 +20,8 @@ public class Restaurante {
     private String nome;
     
     @NotEmpty
-    @Valid
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     @CollectionTable(name = "restaurante_formas_pagamento")
     private Set<FormaPagamento> formasPagamentoAceitas = new HashSet<>();
     
@@ -34,36 +33,12 @@ public class Restaurante {
         this.formasPagamentoAceitas = new HashSet<>(formasPagamentoAceitas);
     }
     
-    public void adicionarFormaPagamento(FormaPagamento formaPagamento) {
-        this.formasPagamentoAceitas.add(formaPagamento);
-    }
-    
-    public void removerFormaPagamento(FormaPagamento formaPagamento) {
-        if (this.formasPagamentoAceitas.size() > 1) {
-            this.formasPagamentoAceitas.remove(formaPagamento);
-        } else {
-            throw new IllegalStateException("Restaurante deve aceitar pelo menos uma forma de pagamento");
-        }
-    }
-    
-    public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
-        return formasPagamentoAceitas.contains(formaPagamento);
-    }
-    
-    public Set<FormaPagamento> getFormasCompatíveisCom(Set<FormaPagamento> formasUsuario) {
+    public Set<FormaPagamento> getFormasCompativeisCom(Set<FormaPagamento> formasUsuario) {
         return FormaPagamento.getFormasCompativeis(formasPagamentoAceitas, formasUsuario);
     }
     
     public Long getId() {
         return id;
-    }
-    
-    public String getNome() {
-        return nome;
-    }
-    
-    public Set<FormaPagamento> getFormasPagamentoAceitas() {
-        return new HashSet<>(formasPagamentoAceitas);
     }
     
     @Override

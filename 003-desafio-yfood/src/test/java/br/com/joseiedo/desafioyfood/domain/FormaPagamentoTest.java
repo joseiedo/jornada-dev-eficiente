@@ -12,9 +12,7 @@ class FormaPagamentoTest {
     @Test
     void getFormasCompativeis_emptyAndOneItem_shouldReturnEmpty() {
         Set<FormaPagamento> empty = new HashSet<>();
-        Set<FormaPagamento> oneItem = Set.of(
-            new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito")
-        );
+        Set<FormaPagamento> oneItem = Set.of(FormaPagamento.VISA);
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(empty, oneItem);
         
@@ -23,9 +21,7 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_oneItemAndEmpty_shouldReturnEmpty() {
-        Set<FormaPagamento> oneItem = Set.of(
-            new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito")
-        );
+        Set<FormaPagamento> oneItem = Set.of(FormaPagamento.VISA);
         Set<FormaPagamento> empty = new HashSet<>();
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(oneItem, empty);
@@ -35,12 +31,8 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_oneDifferentItemEach_shouldReturnEmpty() {
-        Set<FormaPagamento> set1 = Set.of(
-            new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito")
-        );
-        Set<FormaPagamento> set2 = Set.of(
-            new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Crédito")
-        );
+        Set<FormaPagamento> set1 = Set.of(FormaPagamento.VISA);
+        Set<FormaPagamento> set2 = Set.of(FormaPagamento.DINHEIRO);
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(set1, set2);
         
@@ -59,8 +51,8 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_sameTipoOneItemEach_shouldReturnOneItem() {
-        FormaPagamento forma1 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento forma2 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Débito");
+        FormaPagamento forma1 = FormaPagamento.VISA;
+        FormaPagamento forma2 = FormaPagamento.VISA;
         
         Set<FormaPagamento> set1 = Set.of(forma1);
         Set<FormaPagamento> set2 = Set.of(forma2);
@@ -73,35 +65,35 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_multipleItemsWithPartialMatch_shouldReturnOnlyMatching() {
-        FormaPagamento visa1 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento master1 = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Crédito");
-        FormaPagamento dinheiro1 = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento visa1 = FormaPagamento.VISA;
+        FormaPagamento master1 = FormaPagamento.MASTER;
+        FormaPagamento dinheiro1 = FormaPagamento.DINHEIRO;
         
-        FormaPagamento visa2 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Débito");
-        FormaPagamento elo2 = new FormaPagamento(TipoPagamento.CARTAO_ELO, "Elo Crédito");
-        FormaPagamento dinheiro2 = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento visa2 = FormaPagamento.VISA;
+        FormaPagamento elo2 = FormaPagamento.ELO;
+        FormaPagamento dinheiro2 = FormaPagamento.DINHEIRO;
         
         Set<FormaPagamento> set1 = Set.of(visa1, master1, dinheiro1);
         Set<FormaPagamento> set2 = Set.of(visa2, elo2, dinheiro2);
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(set1, set2);
         
-        assertEquals(2, result.size());
+        assertEquals(2, result.size()); // Only exact matches
         assertTrue(result.contains(visa1));
         assertTrue(result.contains(dinheiro1));
-        assertFalse(result.contains(master1));
+        assertFalse(result.contains(master1)); // MASTER doesn't match with VISA or ELO
     }
 
     @Test
     void getFormasCompativeis_multipleItemsNoMatch_shouldReturnEmpty() {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento master = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Crédito");
+        FormaPagamento visa = FormaPagamento.VISA;
+        FormaPagamento master = FormaPagamento.MASTER;
         
-        FormaPagamento elo = new FormaPagamento(TipoPagamento.CARTAO_ELO, "Elo Crédito");
-        FormaPagamento hypercard = new FormaPagamento(TipoPagamento.CARTAO_HYPERCARD, "Hypercard");
+        FormaPagamento dinheiro = FormaPagamento.DINHEIRO;
+        FormaPagamento cheque = FormaPagamento.CHEQUE;
         
         Set<FormaPagamento> set1 = Set.of(visa, master);
-        Set<FormaPagamento> set2 = Set.of(elo, hypercard);
+        Set<FormaPagamento> set2 = Set.of(dinheiro, cheque);
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(set1, set2);
         
@@ -110,13 +102,13 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_allTypesMatch_shouldReturnAllFromFirstSet() {
-        FormaPagamento visa1 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento master1 = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Crédito");
-        FormaPagamento dinheiro1 = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento visa1 = FormaPagamento.VISA;
+        FormaPagamento master1 = FormaPagamento.MASTER;
+        FormaPagamento dinheiro1 = FormaPagamento.DINHEIRO;
         
-        FormaPagamento visa2 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Débito");
-        FormaPagamento master2 = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Débito");
-        FormaPagamento dinheiro2 = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento visa2 = FormaPagamento.VISA;
+        FormaPagamento master2 = FormaPagamento.MASTER;
+        FormaPagamento dinheiro2 = FormaPagamento.DINHEIRO;
         
         Set<FormaPagamento> set1 = Set.of(visa1, master1, dinheiro1);
         Set<FormaPagamento> set2 = Set.of(visa2, master2, dinheiro2);
@@ -130,31 +122,31 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_duplicateTypesInSameSet_shouldHandleCorrectly() {
-        FormaPagamento visa1 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento visa2 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Débito");
-        FormaPagamento master = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master");
+    void getFormasCompativeis_multipleCardTypesInSet_shouldMatchAllCards() {
+        FormaPagamento visa = FormaPagamento.VISA;
+        FormaPagamento master = FormaPagamento.MASTER;
+        FormaPagamento elo = FormaPagamento.ELO;
         
-        FormaPagamento visaMatch = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Premium");
+        FormaPagamento visaMatch = FormaPagamento.VISA;
         
-        Set<FormaPagamento> set1 = Set.of(visa1, visa2, master);
+        Set<FormaPagamento> set1 = Set.of(visa, master, elo);
         Set<FormaPagamento> set2 = Set.of(visaMatch);
         
         Set<FormaPagamento> result = FormaPagamento.getFormasCompativeis(set1, set2);
         
-        assertEquals(2, result.size()); // Both visa1 and visa2 should match
-        assertTrue(result.contains(visa1));
-        assertTrue(result.contains(visa2));
+        assertEquals(1, result.size()); // Only exact matches
+        assertTrue(result.contains(visa));
         assertFalse(result.contains(master));
+        assertFalse(result.contains(elo));
     }
 
     @Test
     void getFormasCompativeis_singleItemAgainstMultiple_shouldReturnIfMatch() {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Único");
+        FormaPagamento visa = FormaPagamento.VISA;
         
-        FormaPagamento visa1 = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa 1");
-        FormaPagamento master = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master");
-        FormaPagamento elo = new FormaPagamento(TipoPagamento.CARTAO_ELO, "Elo");
+        FormaPagamento visa1 = FormaPagamento.VISA;
+        FormaPagamento master = FormaPagamento.MASTER;
+        FormaPagamento elo = FormaPagamento.ELO;
         
         Set<FormaPagamento> singleSet = Set.of(visa);
         Set<FormaPagamento> multipleSet = Set.of(visa1, master, elo);
@@ -167,7 +159,7 @@ class FormaPagamentoTest {
 
     @Test
     void getFormasCompativeis_nullHandling_shouldThrowIllegalArgumentException() {
-        FormaPagamento forma = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa");
+        FormaPagamento forma = FormaPagamento.VISA;
         Set<FormaPagamento> validSet = Set.of(forma);
         
         assertThrows(IllegalArgumentException.class, () -> {

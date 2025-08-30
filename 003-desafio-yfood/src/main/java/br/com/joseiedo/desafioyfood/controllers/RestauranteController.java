@@ -39,7 +39,7 @@ public class RestauranteController {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new NotFoundException(Usuario.class, usuarioId));
         
-        Set<FormaPagamento> formasCompatíveis = restaurante.getFormasCompatíveisCom(usuario.getFormasPagamento());
+        Set<FormaPagamento> formasCompatíveis = restaurante.getFormasCompativeisCom(usuario.getFormasPagamento());
         
         List<FormaPagamentoResponseDto> response = formasCompatíveis.stream()
                 .map(FormaPagamentoResponseDto::new)

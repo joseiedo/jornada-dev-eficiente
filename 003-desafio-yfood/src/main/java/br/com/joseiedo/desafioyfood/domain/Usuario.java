@@ -25,8 +25,8 @@ public class Usuario {
     private String email;
     
     @NotEmpty
-    @Valid
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     @CollectionTable(name = "usuario_formas_pagamento")
     @Size(min=1)
     private Set<FormaPagamento> formasPagamento = new HashSet<>();
@@ -38,22 +38,6 @@ public class Usuario {
         this.email = email;
         Assert.isTrue(formasPagamento.size() == 1, "formasPagamento é menor que 1");
         this.formasPagamento = new HashSet<>(formasPagamento);
-    }
-    
-    public void adicionarFormaPagamento(FormaPagamento formaPagamento) {
-        this.formasPagamento.add(formaPagamento);
-    }
-    
-    public void removerFormaPagamento(FormaPagamento formaPagamento) {
-        if (this.formasPagamento.size() > 1) {
-            this.formasPagamento.remove(formaPagamento);
-        } else {
-            throw new IllegalStateException("Usuario deve ter pelo menos uma forma de pagamento");
-        }
-    }
-    
-    public Set<FormaPagamento> getFormasCompatíveisCom(Set<FormaPagamento> formasAceitas) {
-        return FormaPagamento.getFormasCompativeis(formasPagamento, formasAceitas);
     }
     
     public Long getId() {

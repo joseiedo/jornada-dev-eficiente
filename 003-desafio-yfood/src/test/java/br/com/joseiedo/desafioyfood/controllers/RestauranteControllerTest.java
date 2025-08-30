@@ -53,8 +53,8 @@ class RestauranteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value("CARTAO_VISA"))
-                .andExpect(jsonPath("$[0].descricao").value("Visa Aceito"));
+                .andExpect(jsonPath("$[0].id").value("VISA"))
+                .andExpect(jsonPath("$[0].descricao").value("Visa"));
     }
 
     @Test
@@ -71,7 +71,7 @@ class RestauranteControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value("DINHEIRO"))
-                .andExpect(jsonPath("$[0].descricao").value("Dinheiro Aceito"));
+                .andExpect(jsonPath("$[0].descricao").value("Dinheiro"));
     }
 
     @Test
@@ -87,16 +87,16 @@ class RestauranteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[?(@.id == 'CARTAO_VISA')]").exists())
-                .andExpect(jsonPath("$[?(@.id == 'CARTAO_MASTER')]").exists());
+                .andExpect(jsonPath("$[?(@.id == 'VISA')]").exists())
+                .andExpect(jsonPath("$[?(@.id == 'MASTER')]").exists());
     }
 
     @Test
     void getFormasCompativeis_semFormasCompativeis_shouldReturnEmptyArray() throws Exception {
-        Usuario usuario = UsuarioFactory.createWithFormaDePagamentoCartao();
+        Usuario usuario = UsuarioFactory.createWithFormaDePagamentoDinheiro();
         usuario = usuarioRepository.save(usuario);
 
-        Restaurante restaurante = RestauranteFactory.createAceitandoEloEHypercard();
+        Restaurante restaurante = RestauranteFactory.createAceitandoCartoes();
         restaurante = restauranteRepository.save(restaurante);
 
         mockMvc.perform(get("/restaurantes/{restauranteId}/formas-pagamento-compativeis/{usuarioId}", 
@@ -119,8 +119,8 @@ class RestauranteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[?(@.id == 'CARTAO_VISA')]").exists())
-                .andExpect(jsonPath("$[?(@.id == 'CARTAO_MASTER')]").exists());
+                .andExpect(jsonPath("$[?(@.id == 'VISA')]").exists())
+                .andExpect(jsonPath("$[?(@.id == 'MASTER')]").exists());
     }
 
     @Test

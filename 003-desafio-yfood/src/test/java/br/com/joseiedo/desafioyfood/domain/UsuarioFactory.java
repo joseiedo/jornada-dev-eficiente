@@ -5,19 +5,19 @@ import java.util.Set;
 public class UsuarioFactory {
     
     public static Usuario createWithFormaDePagamentoCartao() {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
+        FormaPagamento visa = FormaPagamento.VISA;
         return new Usuario("usuario@test.com", Set.of(visa));
     }
     
     public static Usuario createWithFormaDePagamentoDinheiro() {
-        FormaPagamento dinheiro = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento dinheiro = FormaPagamento.DINHEIRO;
         return new Usuario("usuario@test.com", Set.of(dinheiro));
     }
     
     public static Usuario createWithMultiplasFormasPagamento() {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento master = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Débito");
-        FormaPagamento dinheiro = new FormaPagamento(TipoPagamento.DINHEIRO, "Dinheiro");
+        FormaPagamento visa = FormaPagamento.VISA;
+        FormaPagamento master = FormaPagamento.MASTER;
+        FormaPagamento dinheiro = FormaPagamento.DINHEIRO;
         
         Usuario usuario = new Usuario("usuario@test.com", Set.of(visa));
         usuario.adicionarFormaPagamento(master);
@@ -26,8 +26,8 @@ public class UsuarioFactory {
     }
     
     public static Usuario createWithVisaEMaster() {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
-        FormaPagamento master = new FormaPagamento(TipoPagamento.CARTAO_MASTER, "Master Débito");
+        FormaPagamento visa = FormaPagamento.VISA;
+        FormaPagamento master = FormaPagamento.MASTER;
         
         Usuario usuario = new Usuario("usuario.visa.master@test.com", Set.of(visa));
         usuario.adicionarFormaPagamento(master);
@@ -35,7 +35,7 @@ public class UsuarioFactory {
     }
     
     public static Usuario createWithCustomEmail(String email) {
-        FormaPagamento visa = new FormaPagamento(TipoPagamento.CARTAO_VISA, "Visa Crédito");
+        FormaPagamento visa = FormaPagamento.VISA;
         return new Usuario(email, Set.of(visa));
     }
     
