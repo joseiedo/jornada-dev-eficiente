@@ -68,4 +68,33 @@ class UsuarioTest {
             usuarioRepository.saveAndFlush(usuario);
         });
     }
+
+    @Test
+    void deveRetornarApenasFormasOfflineQuandoUsuarioEhFraudador() {
+        Set<FormaPagamento> todasFormas = Set.of(
+            FormaPagamento.VISA,
+            FormaPagamento.MASTER, 
+            FormaPagamento.DINHEIRO,
+            FormaPagamento.CHEQUE
+        );
+        
+        Usuario usuario = new Usuario("fraudador@exemplo.com", todasFormas);
+        
+        RegraFraude regraFraude = new RegraFraude() {
+            @Override
+            public boolean ehFraude(Usuario usuario) {
+                return true;
+            }
+        };
+        
+        Set<RegraFraude> regras = Set.of(regraFraude);
+        
+        Set<FormaPagamento> formasFiltradas = usuario.getFormasPagamentoFiltrandoPorRegras(regras);
+        
+        assertEquals(2, formasFiltradas.size());
+        assertTrue(formasFiltradas.contains(FormaPagamento.DINHEIRO));
+        assertTrue(formasFiltradas.contains(FormaPagamento.CHEQUE));
+        assertFalse(formasFiltradas.contains(FormaPagamento.VISA));
+        assertFalse(formasFiltradas.contains(FormaPagamento.MASTER));
+    }
 }
