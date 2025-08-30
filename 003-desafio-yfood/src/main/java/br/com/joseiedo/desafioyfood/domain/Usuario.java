@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Usuario {
@@ -36,7 +37,7 @@ public class Usuario {
     
     public Usuario(@NotBlank @Email String email, @NotEmpty Set<FormaPagamento> formasPagamento) {
         this.email = email;
-        Assert.isTrue(formasPagamento.size() == 1, "formasPagamento é menor que 1");
+        Assert.isTrue(!formasPagamento.isEmpty(), "formasPagamento eh menor que 1");
         this.formasPagamento = new HashSet<>(formasPagamento);
     }
     
@@ -49,6 +50,18 @@ public class Usuario {
     }
     
     public Set<FormaPagamento> getFormasPagamento() {
+        return new HashSet<>(formasPagamento);
+    }
+    
+    public Set<FormaPagamento> getFormasPagamento(Set<RegraFraude> regras) {
+        boolean ehFraudador = regras.stream().anyMatch(regra -> regra.ehFraude(this));
+        
+        if (ehFraudador) {
+            return formasPagamento.stream()
+                    .filter(forma -> !forma.getTipo().isOnline())
+                    .collect(Collectors.toSet());
+        }
+        
         return new HashSet<>(formasPagamento);
     }
     

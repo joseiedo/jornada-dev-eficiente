@@ -17,21 +17,15 @@ public class UsuarioFactory {
     public static Usuario createWithMultiplasFormasPagamento() {
         FormaPagamento visa = FormaPagamento.VISA;
         FormaPagamento master = FormaPagamento.MASTER;
-        FormaPagamento dinheiro = FormaPagamento.DINHEIRO;
         
-        Usuario usuario = new Usuario("usuario@test.com", Set.of(visa));
-        usuario.adicionarFormaPagamento(master);
-        usuario.adicionarFormaPagamento(dinheiro);
-        return usuario;
+        return new Usuario("usuario@test.com", Set.of(visa, master));
     }
     
     public static Usuario createWithVisaEMaster() {
         FormaPagamento visa = FormaPagamento.VISA;
         FormaPagamento master = FormaPagamento.MASTER;
         
-        Usuario usuario = new Usuario("usuario.visa.master@test.com", Set.of(visa));
-        usuario.adicionarFormaPagamento(master);
-        return usuario;
+        return new Usuario("usuario.visa.master@test.com", Set.of(visa, master));
     }
     
     public static Usuario createWithCustomEmail(String email) {

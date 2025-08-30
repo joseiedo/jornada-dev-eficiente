@@ -1,6 +1,7 @@
 package br.com.joseiedo.desafioyfood.controllers;
 
 import br.com.joseiedo.desafioyfood.domain.FormaPagamento;
+import br.com.joseiedo.desafioyfood.domain.ProcessadorRegrasFraude;
 import br.com.joseiedo.desafioyfood.domain.Restaurante;
 import br.com.joseiedo.desafioyfood.domain.Usuario;
 import br.com.joseiedo.desafioyfood.exceptions.NotFoundException;
@@ -21,15 +22,18 @@ public class RestauranteController {
     
     private final RestauranteRepository restauranteRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProcessadorRegrasFraude processadorRegrasFraude;
     
     public RestauranteController(RestauranteRepository restauranteRepository, 
-                               UsuarioRepository usuarioRepository) {
+                               UsuarioRepository usuarioRepository,
+                               ProcessadorRegrasFraude processadorRegrasFraude) {
         this.restauranteRepository = restauranteRepository;
         this.usuarioRepository = usuarioRepository;
+        this.processadorRegrasFraude = processadorRegrasFraude;
     }
     
     @GetMapping("/{restauranteId}/formas-pagamento-compativeis/{usuarioId}")
-    public ResponseEntity<List<FormaPagamentoResponseDto>> getFormasCompatíveis(
+    public ResponseEntity<List<FormaPagamentoResponseDto>> getFormasCompativeis(
             @PathVariable Long restauranteId, 
             @PathVariable Long usuarioId) {
         
@@ -39,9 +43,10 @@ public class RestauranteController {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new NotFoundException(Usuario.class, usuarioId));
         
-        Set<FormaPagamento> formasCompatíveis = restaurante.getFormasCompativeisCom(usuario.getFormasPagamento());
+        Set<FormaPagamento> formasUsuarioFiltradas = processadorRegrasFraude.aplicarRegras(usuario);
+        Set<FormaPagamento> formasCompativeis = restaurante.getFormasCompativeisCom(formasUsuarioFiltradas);
         
-        List<FormaPagamentoResponseDto> response = formasCompatíveis.stream()
+        List<FormaPagamentoResponseDto> response = formasCompativeis.stream()
                 .map(FormaPagamentoResponseDto::new)
                 .toList();
         

@@ -27,7 +27,7 @@ class UsuarioTest {
     }
 
     @Test
-    void persist_formasPagamentoEmpty_shouldThrowIllegalArgumentException() {
+    void deveLancarExcecaoQuandoFormasPagamentoEstiverVazio() {
         Set<FormaPagamento> formasVazias = new HashSet<>();
         
         assertThrows(IllegalArgumentException.class, () -> {
@@ -36,7 +36,7 @@ class UsuarioTest {
     }
 
     @Test
-    void persist_validUsuario_shouldPersistSuccessfully() {
+    void devePersistirUsuarioValidoComSucesso() {
         FormaPagamento visa = FormaPagamento.VISA;
         Set<FormaPagamento> formas = Set.of(visa);
         Usuario usuario = new Usuario("usuario@test.com", formas);
@@ -50,17 +50,17 @@ class UsuarioTest {
     }
 
     @Test
-    void persist_invalidEmail_shouldFailValidation() {
+    void deveFalharValidacaoComEmailInvalido() {
         FormaPagamento visa = FormaPagamento.VISA;
         
         assertThrows(Exception.class, () -> {
-            Usuario usuario = new Usuario("email-inválido", Set.of(visa));
+            Usuario usuario = new Usuario("email-invalido", Set.of(visa));
             usuarioRepository.saveAndFlush(usuario);
         });
     }
 
     @Test
-    void persist_blankEmail_shouldFailValidation() {
+    void deveFalharValidacaoComEmailVazio() {
         FormaPagamento visa = FormaPagamento.VISA;
         
         assertThrows(Exception.class, () -> {

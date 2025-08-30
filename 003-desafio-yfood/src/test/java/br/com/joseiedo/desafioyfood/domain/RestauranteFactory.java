@@ -7,7 +7,7 @@ public class RestauranteFactory {
     public static Restaurante createAceitandoCartoes() {
         FormaPagamento visa = FormaPagamento.VISA;
         FormaPagamento master = FormaPagamento.MASTER;
-        return new Restaurante("Restaurante Cartões", Set.of(visa, master));
+        return new Restaurante("Restaurante Cartoes", Set.of(visa, master));
     }
     
     public static Restaurante createAceitandoDinheiro() {

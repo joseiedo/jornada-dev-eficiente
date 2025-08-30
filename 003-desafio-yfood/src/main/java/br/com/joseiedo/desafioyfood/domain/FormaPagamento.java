@@ -12,7 +12,7 @@ public enum FormaPagamento {
     MASTER(TipoPagamento.CARTAO, "Master"),
     ELO(TipoPagamento.CARTAO, "Elo"),
     DINHEIRO(TipoPagamento.DINHEIRO, "Dinheiro"),
-    MAQUINA(TipoPagamento.MAQUINA, "Máquina"),
+    MAQUINA(TipoPagamento.MAQUINA, "Maquina"),
     CHEQUE(TipoPagamento.CHEQUE, "Cheque");
 
     private final TipoPagamento tipo;

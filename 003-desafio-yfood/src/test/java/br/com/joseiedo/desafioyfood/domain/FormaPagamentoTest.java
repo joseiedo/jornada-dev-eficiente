@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FormaPagamentoTest {
 
     @Test
-    void getFormasCompativeis_emptyAndOneItem_shouldReturnEmpty() {
+    void deveRetornarVazioQuandoUmConjuntoVazioEOutroComUmItem() {
         Set<FormaPagamento> empty = new HashSet<>();
         Set<FormaPagamento> oneItem = Set.of(FormaPagamento.VISA);
         
@@ -20,7 +20,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_oneItemAndEmpty_shouldReturnEmpty() {
+    void deveRetornarVazioQuandoUmConjuntoComItemEOutroVazio() {
         Set<FormaPagamento> oneItem = Set.of(FormaPagamento.VISA);
         Set<FormaPagamento> empty = new HashSet<>();
         
@@ -30,7 +30,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_oneDifferentItemEach_shouldReturnEmpty() {
+    void deveRetornarVazioQuandoCadaConjuntoTemItensDistintos() {
         Set<FormaPagamento> set1 = Set.of(FormaPagamento.VISA);
         Set<FormaPagamento> set2 = Set.of(FormaPagamento.DINHEIRO);
         
@@ -40,7 +40,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_bothEmpty_shouldReturnEmpty() {
+    void deveRetornarVazioQuandoAmbosConjuntosVazios() {
         Set<FormaPagamento> empty1 = new HashSet<>();
         Set<FormaPagamento> empty2 = new HashSet<>();
         
@@ -50,7 +50,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_sameTipoOneItemEach_shouldReturnOneItem() {
+    void deveRetornarUmItemQuandoMesmoTipoEmCadaConjunto() {
         FormaPagamento forma1 = FormaPagamento.VISA;
         FormaPagamento forma2 = FormaPagamento.VISA;
         
@@ -64,7 +64,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_multipleItemsWithPartialMatch_shouldReturnOnlyMatching() {
+    void deveRetornarApenasItensCompativeisQuandoHaCorrespondenciaParcial() {
         FormaPagamento visa1 = FormaPagamento.VISA;
         FormaPagamento master1 = FormaPagamento.MASTER;
         FormaPagamento dinheiro1 = FormaPagamento.DINHEIRO;
@@ -85,7 +85,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_multipleItemsNoMatch_shouldReturnEmpty() {
+    void deveRetornarVazioQuandoMultiplosItensSemCorrespondencia() {
         FormaPagamento visa = FormaPagamento.VISA;
         FormaPagamento master = FormaPagamento.MASTER;
         
@@ -101,7 +101,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_allTypesMatch_shouldReturnAllFromFirstSet() {
+    void deveRetornarTodosDoprimeiroConjuntoQuandoTodosTiposCorrespondem() {
         FormaPagamento visa1 = FormaPagamento.VISA;
         FormaPagamento master1 = FormaPagamento.MASTER;
         FormaPagamento dinheiro1 = FormaPagamento.DINHEIRO;
@@ -122,7 +122,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_multipleCardTypesInSet_shouldMatchAllCards() {
+    void deveCorresponderTodosCartoesQuandoConjuntoTemMultiplosTiposCartao() {
         FormaPagamento visa = FormaPagamento.VISA;
         FormaPagamento master = FormaPagamento.MASTER;
         FormaPagamento elo = FormaPagamento.ELO;
@@ -141,7 +141,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_singleItemAgainstMultiple_shouldReturnIfMatch() {
+    void deveRetornarSeCorresponderQuandoUmItemContraMultiplos() {
         FormaPagamento visa = FormaPagamento.VISA;
         
         FormaPagamento visa1 = FormaPagamento.VISA;
@@ -158,7 +158,7 @@ class FormaPagamentoTest {
     }
 
     @Test
-    void getFormasCompativeis_nullHandling_shouldThrowIllegalArgumentException() {
+    void deveLancarExcecaoQuandoParametroForNull() {
         FormaPagamento forma = FormaPagamento.VISA;
         Set<FormaPagamento> validSet = Set.of(forma);
         

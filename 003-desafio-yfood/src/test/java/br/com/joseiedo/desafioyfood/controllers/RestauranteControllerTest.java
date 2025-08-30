@@ -41,7 +41,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_usuarioVisaRestauranteVisa_shouldReturnVisa() throws Exception {
+    void deveRetornarVisaQuandoUsuarioERestauranteAceitamVisa() throws Exception {
         Usuario usuario = UsuarioFactory.createWithFormaDePagamentoCartao();
         usuario = usuarioRepository.save(usuario);
 
@@ -58,7 +58,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_usuarioDinheiroRestauranteDinheiro_shouldReturnDinheiro() throws Exception {
+    void deveRetornarDinheiroQuandoUsuarioERestauranteAceitamDinheiro() throws Exception {
         Usuario usuario = UsuarioFactory.createWithFormaDePagamentoDinheiro();
         usuario = usuarioRepository.save(usuario);
 
@@ -75,7 +75,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_usuarioMultiplasFormasRestauranteCartoes_shouldReturnCartoesCompativeis() throws Exception {
+    void deveRetornarCartoesCompativeisQuandoUsuarioTemMultiplasFormasERestauranteAceitaCartoes() throws Exception {
         Usuario usuario = UsuarioFactory.createWithMultiplasFormasPagamento();
         usuario = usuarioRepository.save(usuario);
 
@@ -92,7 +92,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_semFormasCompativeis_shouldReturnEmptyArray() throws Exception {
+    void deveRetornarArrayVazioQuandoNaoHaFormasCompativeis() throws Exception {
         Usuario usuario = UsuarioFactory.createWithFormaDePagamentoDinheiro();
         usuario = usuarioRepository.save(usuario);
 
@@ -107,7 +107,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_usuarioVisaMasterRestauranteCompleto_shouldReturnVisaMaster() throws Exception {
+    void deveRetornarVisaEMasterQuandoUsuarioTemVisaMasterERestauranteEhCompleto() throws Exception {
         Usuario usuario = UsuarioFactory.createWithVisaEMaster();
         usuario = usuarioRepository.save(usuario);
 
@@ -124,7 +124,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_restauranteInexistente_shouldReturn404() throws Exception {
+    void deveRetornar404QuandoRestauranteNaoExiste() throws Exception {
         Usuario usuario = UsuarioFactory.createWithFormaDePagamentoCartao();
         usuario = usuarioRepository.save(usuario);
 
@@ -137,7 +137,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_usuarioInexistente_shouldReturn404() throws Exception {
+    void deveRetornar404QuandoUsuarioNaoExiste() throws Exception {
         Restaurante restaurante = RestauranteFactory.createAceitandoApenasVisa();
         restaurante = restauranteRepository.save(restaurante);
 
@@ -150,7 +150,7 @@ class RestauranteControllerTest {
     }
 
     @Test
-    void getFormasCompativeis_ambosInexistentes_shouldReturn404WithRestauranteError() throws Exception {
+    void deveRetornar404ComErroDeRestauranteQuandoAmbosNaoExistem() throws Exception {
         mockMvc.perform(get("/restaurantes/{restauranteId}/formas-pagamento-compativeis/{usuarioId}", 
                         999L, 888L))
                 .andExpect(status().isNotFound())
