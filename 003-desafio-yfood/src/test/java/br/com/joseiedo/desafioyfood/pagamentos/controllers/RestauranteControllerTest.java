@@ -1,11 +1,11 @@
-package br.com.joseiedo.desafioyfood.controllers;
+package br.com.joseiedo.desafioyfood.pagamentos.controllers;
 
-import br.com.joseiedo.desafioyfood.domain.RestauranteFactory;
-import br.com.joseiedo.desafioyfood.domain.UsuarioFactory;
-import br.com.joseiedo.desafioyfood.domain.Restaurante;
-import br.com.joseiedo.desafioyfood.domain.Usuario;
-import br.com.joseiedo.desafioyfood.repository.RestauranteRepository;
-import br.com.joseiedo.desafioyfood.repository.UsuarioRepository;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.RestauranteFactory;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.UsuarioFactory;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.Restaurante;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.Usuario;
+import br.com.joseiedo.desafioyfood.pagamentos.repository.RestauranteRepository;
+import br.com.joseiedo.desafioyfood.pagamentos.repository.UsuarioRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

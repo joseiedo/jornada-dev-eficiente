@@ -1,4 +1,4 @@
-package br.com.joseiedo.desafioyfood.domain;
+package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

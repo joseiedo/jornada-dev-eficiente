@@ -1,6 +1,6 @@
-package br.com.joseiedo.desafioyfood.domain;
+package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
-import br.com.joseiedo.desafioyfood.repository.UsuarioRepository;
+import br.com.joseiedo.desafioyfood.pagamentos.repository.UsuarioRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

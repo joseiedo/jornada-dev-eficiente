@@ -1,4 +1,4 @@
-package br.com.joseiedo.desafioyfood.controllers;
+package br.com.joseiedo.desafioyfood.pagamentos.controllers;
 
 import br.com.joseiedo.desafioyfood.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;

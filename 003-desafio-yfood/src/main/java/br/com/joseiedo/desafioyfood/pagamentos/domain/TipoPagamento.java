@@ -1,4 +1,4 @@
-package br.com.joseiedo.desafioyfood.domain;
+package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
 public enum TipoPagamento {
     CARTAO(true),

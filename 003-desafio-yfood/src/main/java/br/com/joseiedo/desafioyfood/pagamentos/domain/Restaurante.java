@@ -1,8 +1,9 @@
-package br.com.joseiedo.desafioyfood.domain;
+package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import org.springframework.util.Assert;
 
 import java.util.HashSet;
@@ -30,7 +31,8 @@ public class Restaurante {
     @Deprecated
     public Restaurante() {}
     
-    public Restaurante(@NotBlank String nome, @NotEmpty Set<FormaPagamento> formasPagamentoAceitas) {
+    public Restaurante(@NotBlank String nome, @Size(min = 1) Set<FormaPagamento> formasPagamentoAceitas) {
+        Assert.isTrue(!formasPagamentoAceitas.isEmpty(), "Formas pagamento precisam ser >= 1");
         this.nome = nome;
         this.formasPagamentoAceitas = new HashSet<>(formasPagamentoAceitas);
     }

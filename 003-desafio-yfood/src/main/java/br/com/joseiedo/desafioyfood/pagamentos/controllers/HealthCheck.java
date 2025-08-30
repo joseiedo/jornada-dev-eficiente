@@ -1,4 +1,4 @@
-package br.com.joseiedo.desafioyfood.controllers;
+package br.com.joseiedo.desafioyfood.pagamentos.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

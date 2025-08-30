@@ -74,3 +74,8 @@ Add the used annotations in the fields also in the constructor parameters (just 
 - do not automatically add getters and setters that are not being used
 - For tests, avoid mocks. To create entities data, use the object mother pattern, ex:
 UsuarioFactory is a static class with a createWithFormaDePagamentoCartao method and many others.
+- In this project I want to simulate 2 services:
+pagamentos
+and pedidos.
+
+both should communicate with each other using HTTP

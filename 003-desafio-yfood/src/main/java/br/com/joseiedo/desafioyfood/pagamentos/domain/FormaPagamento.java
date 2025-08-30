@@ -1,4 +1,4 @@
-package br.com.joseiedo.desafioyfood.domain;
+package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
 public enum FormaPagamento {
     VISA(TipoPagamento.CARTAO, "Visa"),

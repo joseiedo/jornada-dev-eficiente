@@ -1,12 +1,12 @@
-package br.com.joseiedo.desafioyfood.controllers;
+package br.com.joseiedo.desafioyfood.pagamentos.controllers;
 
-import br.com.joseiedo.desafioyfood.domain.FormaPagamento;
-import br.com.joseiedo.desafioyfood.domain.RegraFraude;
-import br.com.joseiedo.desafioyfood.domain.Restaurante;
-import br.com.joseiedo.desafioyfood.domain.Usuario;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.FormaPagamento;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.RegraFraude;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.Restaurante;
+import br.com.joseiedo.desafioyfood.pagamentos.domain.Usuario;
 import br.com.joseiedo.desafioyfood.exceptions.NotFoundException;
-import br.com.joseiedo.desafioyfood.repository.RestauranteRepository;
-import br.com.joseiedo.desafioyfood.repository.UsuarioRepository;
+import br.com.joseiedo.desafioyfood.pagamentos.repository.RestauranteRepository;
+import br.com.joseiedo.desafioyfood.pagamentos.repository.UsuarioRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
