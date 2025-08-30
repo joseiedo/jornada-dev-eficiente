@@ -19,11 +19,28 @@ public class Pedido {
     @Column(nullable = false)
     private BigDecimal valor;
     
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FormaPagamento formaPagamento;
+    
+    @NotNull
+    @Column(nullable = false)
+    private Long restauranteId;
+    
+    @NotNull
+    @Column(nullable = false)
+    private Long usuarioId;
+    
     @Deprecated
     public Pedido() {}
     
-    public Pedido(@NotNull @Positive BigDecimal valor) {
+    public Pedido(@NotNull @Positive BigDecimal valor, @NotNull FormaPagamento formaPagamento, 
+                  @NotNull Long restauranteId, @NotNull Long usuarioId) {
         this.valor = valor;
+        this.formaPagamento = formaPagamento;
+        this.restauranteId = restauranteId;
+        this.usuarioId = usuarioId;
     }
 
     public Long getId() {
@@ -32,6 +49,18 @@ public class Pedido {
     
     public BigDecimal getValor() {
         return valor;
+    }
+    
+    public FormaPagamento getFormaPagamento() {
+        return formaPagamento;
+    }
+    
+    public Long getRestauranteId() {
+        return restauranteId;
+    }
+    
+    public Long getUsuarioId() {
+        return usuarioId;
     }
     
     @Override
