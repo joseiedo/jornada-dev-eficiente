@@ -1,7 +1,7 @@
 package br.com.joseiedo.desafioyfood.controllers;
 
 import br.com.joseiedo.desafioyfood.domain.FormaPagamento;
-import br.com.joseiedo.desafioyfood.domain.ProcessadorRegrasFraude;
+import br.com.joseiedo.desafioyfood.domain.RegraFraude;
 import br.com.joseiedo.desafioyfood.domain.Restaurante;
 import br.com.joseiedo.desafioyfood.domain.Usuario;
 import br.com.joseiedo.desafioyfood.exceptions.NotFoundException;
@@ -22,14 +22,14 @@ public class RestauranteController {
     
     private final RestauranteRepository restauranteRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ProcessadorRegrasFraude processadorRegrasFraude;
+    private final Set<RegraFraude> regras;
     
     public RestauranteController(RestauranteRepository restauranteRepository, 
                                UsuarioRepository usuarioRepository,
-                               ProcessadorRegrasFraude processadorRegrasFraude) {
+                               Set<RegraFraude> regras) {
         this.restauranteRepository = restauranteRepository;
         this.usuarioRepository = usuarioRepository;
-        this.processadorRegrasFraude = processadorRegrasFraude;
+        this.regras = regras;
     }
     
     @GetMapping("/{restauranteId}/formas-pagamento-compativeis/{usuarioId}")
@@ -43,7 +43,7 @@ public class RestauranteController {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new NotFoundException(Usuario.class, usuarioId));
         
-        Set<FormaPagamento> formasUsuarioFiltradas = processadorRegrasFraude.aplicarRegras(usuario);
+        Set<FormaPagamento> formasUsuarioFiltradas = usuario.getFormasPagamentoFiltrandoPorRegras(regras);
         Set<FormaPagamento> formasCompativeis = restaurante.getFormasCompativeisCom(formasUsuarioFiltradas);
         
         List<FormaPagamentoResponseDto> response = formasCompativeis.stream()

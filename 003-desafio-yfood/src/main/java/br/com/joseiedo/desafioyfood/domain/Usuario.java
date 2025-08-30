@@ -1,7 +1,6 @@
 package br.com.joseiedo.desafioyfood.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -53,7 +52,7 @@ public class Usuario {
         return new HashSet<>(formasPagamento);
     }
     
-    public Set<FormaPagamento> getFormasPagamento(Set<RegraFraude> regras) {
+    public Set<FormaPagamento> getFormasPagamentoFiltrandoPorRegras(Set<RegraFraude> regras) {
         boolean ehFraudador = regras.stream().anyMatch(regra -> regra.ehFraude(this));
         
         if (ehFraudador) {
