@@ -1,6 +1,6 @@
 package br.com.joseiedo.desafioyfood.pagamentos.clients;
 
-import br.com.joseiedo.desafioyfood.pedidos.repository.PedidoRepository;
+import br.com.joseiedo.desafioyfood.pedidos.domain.FormaPagamento;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
         "pedidos.service.url=http://localhost:8080"
 })
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PedidosClientTest {
+class PedidosClientIntegrationTest {
 
     @Autowired
     private PedidosClient pedidosClient;
@@ -30,7 +30,12 @@ class PedidosClientTest {
 
     @Test
     void deveCriarEBuscarPedido() {
-        PedidoRequestDto request = new PedidoRequestDto(new BigDecimal("100.50"));
+        PedidoRequestDto request = new PedidoRequestDto(
+            new BigDecimal("100.50"),
+            FormaPagamento.DINHEIRO,
+            1L, // restauranteId
+            1L  // usuarioId
+        );
         
         ResponseEntity<PedidoResponseDto> createResponse = pedidosClient.criarPedido(request);
         
@@ -50,9 +55,15 @@ class PedidosClientTest {
 
     @Test
     void deveDeletarPedido() {
-        PedidoRequestDto request = new PedidoRequestDto(new BigDecimal("200.00"));
+        PedidoRequestDto request = new PedidoRequestDto(
+            new BigDecimal("200.00"),
+            FormaPagamento.MAQUINA,
+            2L, // restauranteId
+            2L  // usuarioId
+        );
         
         ResponseEntity<PedidoResponseDto> createResponse = pedidosClient.criarPedido(request);
+        assertNotNull(createResponse.getBody());
         Long pedidoId = createResponse.getBody().id();
         
         ResponseEntity<Void> deleteResponse = pedidosClient.deletarPedido(pedidoId);

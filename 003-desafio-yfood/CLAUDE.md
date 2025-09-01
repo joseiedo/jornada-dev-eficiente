@@ -79,3 +79,4 @@ pagamentos
 and pedidos.
 
 both should communicate with each other using HTTP
+- use specific names for validations exceptions
