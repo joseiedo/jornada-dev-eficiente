@@ -1,39 +1,56 @@
 package br.com.joseiedo.desafioyfood.pagamentos.domain;
 
+import java.lang.reflect.Field;
 import java.util.Set;
 
 public class UsuarioFactory {
     
+    public static Usuario createWithOfflinePayments(Long id) {
+        Usuario usuario = new Usuario("user.offline@test.com", 
+            Set.of(FormaPagamento.DINHEIRO, FormaPagamento.MAQUINA));
+        return setId(usuario, id);
+    }
+    
+    public static Usuario createWithOnlinePayments(Long id) {
+        Usuario usuario = new Usuario("user.online@test.com", 
+            Set.of(FormaPagamento.VISA, FormaPagamento.MASTER, FormaPagamento.ELO));
+        return setId(usuario, id);
+    }
+    
+    public static Usuario createWithFormaPagamento(FormaPagamento formaPagamento) {
+        return new Usuario("user." + formaPagamento.name().toLowerCase() + "@test.com", Set.of(formaPagamento));
+    }
+    
     public static Usuario createWithFormaDePagamentoCartao() {
-        FormaPagamento visa = FormaPagamento.VISA;
-        return new Usuario("usuario@test.com", Set.of(visa));
+        return createWithFormaPagamento(FormaPagamento.VISA);
     }
     
     public static Usuario createWithFormaDePagamentoDinheiro() {
-        FormaPagamento dinheiro = FormaPagamento.DINHEIRO;
-        return new Usuario("usuario@test.com", Set.of(dinheiro));
+        return createWithFormaPagamento(FormaPagamento.DINHEIRO);
+    }
+    
+    public static Usuario createWithFormaDePagamentoMaquina() {
+        return createWithFormaPagamento(FormaPagamento.MAQUINA);
     }
     
     public static Usuario createWithMultiplasFormasPagamento() {
-        FormaPagamento visa = FormaPagamento.VISA;
-        FormaPagamento master = FormaPagamento.MASTER;
-        
-        return new Usuario("usuario@test.com", Set.of(visa, master));
+        return new Usuario("user.multiplas@test.com", 
+            Set.of(FormaPagamento.VISA, FormaPagamento.MASTER, FormaPagamento.DINHEIRO));
     }
     
     public static Usuario createWithVisaEMaster() {
-        FormaPagamento visa = FormaPagamento.VISA;
-        FormaPagamento master = FormaPagamento.MASTER;
-        
-        return new Usuario("usuario.visa.master@test.com", Set.of(visa, master));
+        return new Usuario("user.visaemaster@test.com", 
+            Set.of(FormaPagamento.VISA, FormaPagamento.MASTER));
     }
     
-    public static Usuario createWithCustomEmail(String email) {
-        FormaPagamento visa = FormaPagamento.VISA;
-        return new Usuario(email, Set.of(visa));
-    }
-    
-    public static Usuario createWithSpecificFormaPagamento(FormaPagamento formaPagamento) {
-        return new Usuario("usuario@test.com", Set.of(formaPagamento));
+    private static Usuario setId(Usuario usuario, Long id) {
+        try {
+            Field field = Usuario.class.getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(usuario, id);
+            return usuario;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set ID", e);
+        }
     }
 }
